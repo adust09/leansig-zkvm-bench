@@ -1,1 +1,0 @@
-cargo:rustc-cfg=feature="no_lib_link"

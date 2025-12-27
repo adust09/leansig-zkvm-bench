@@ -1,0 +1,19 @@
+# Build artifacts
+**/target/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Rust
+**/*.rs.bk
+Cargo.lock
+!leansig-minimal/Cargo.lock
+
+# Debug
+*.log

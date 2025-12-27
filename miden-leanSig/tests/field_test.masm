@@ -1,0 +1,58 @@
+# KoalaBear Field Arithmetic Tests
+# p = 0x7F000001 = 2130706433
+# Expected output: [2130706432, 1, 200, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+proc kb_reduce
+    dup
+    push.0x7F000001
+    u32lt
+    if.true
+    else
+        push.0x7F000001
+        u32wrapping_sub
+    end
+end
+
+proc kb_add
+    u32overflowing_add
+    if.true
+        push.0x7F000001
+        u32wrapping_sub
+    else
+        exec.kb_reduce
+    end
+end
+
+proc kb_sub
+    u32overflowing_sub
+    if.true
+        push.0x7F000001
+        u32wrapping_add
+    end
+end
+
+begin
+    # Initial stack: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    # Test 1: 100 + 200 = 300
+    push.100 push.200 exec.kb_add
+    # Stack: [300, 0, 0, ...] (17 elements)
+
+    # Test 2: 300 - 100 = 200
+    push.300 push.100 exec.kb_sub
+    # Stack: [200, 300, 0, ...] (18 elements)
+
+    # Test 3: (p-1) + 2 = 1
+    push.0x7F000000 push.2 exec.kb_add
+    # Stack: [1, 200, 300, 0, ...] (19 elements)
+
+    # Test 4: 1 - 2 = p - 1
+    push.1 push.2 exec.kb_sub
+    # Stack: [p-1, 1, 200, 300, 0, ...] (20 elements)
+
+    # Drop 4 zeros from deep in stack to get back to 16
+    swapdw          # Swap positions 0-3 with 4-7
+                    # [0, 0, 0, 0, p-1, 1, 200, 300, 0, ...]
+    drop drop drop drop  # Drop 4 zeros
+                    # [p-1, 1, 200, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+end

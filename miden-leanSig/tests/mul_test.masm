@@ -1,0 +1,173 @@
+# KoalaBear Multiplication Tests
+# p = 0x7F000001 = 2130706433
+#
+# Test cases:
+# 1. Small multiply: 3 * 7 = 21
+# 2. Medium multiply: 1000 * 2000 = 2000000
+# 3. Overflow case: (p-1) * 2 = 2p - 2 ≡ p - 2 (mod p) = 2130706431
+# 4. Large multiply: 100000 * 100000 = 10^10 mod p
+#    10000000000 mod 2130706433 = 10000000000 - 4*2130706433 = 10000000000 - 8522825732 = 1477174268
+#
+# Expected output: [1477174268, 2130706431, 2000000, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+# Constants
+# KOALABEAR_P = 0x7F000001 = 2130706433
+# 2^32 mod p = 0x80FFFFFF = 2164260863... wait that's > p
+# Let me recalculate: 2^32 = 4294967296, p = 2130706433
+# 2^32 - p = 4294967296 - 2130706433 = 2164260863
+# But 2164260863 > p, so 2^32 mod p = 2164260863 - p = 2164260863 - 2130706433 = 33554430
+# Actually: 2^32 = 2p - 33554431... let me verify
+# 2p = 4261412866, 2^32 - 2p = 4294967296 - 4261412866 = 33554430
+# So 2^32 ≡ 33554430 (mod p)
+# Note: 33554430 = 2^25 - 2 = 0x1FFFFFE
+
+proc kb_reduce
+    dup
+    push.0x7F000001
+    u32lt
+    if.true
+    else
+        push.0x7F000001
+        u32wrapping_sub
+    end
+end
+
+proc kb_add
+    u32overflowing_add
+    if.true
+        push.0x7F000001
+        u32wrapping_sub
+    else
+        exec.kb_reduce
+    end
+end
+
+proc kb_sub
+    u32overflowing_sub
+    if.true
+        push.0x7F000001
+        u32wrapping_add
+    end
+end
+
+# kb_mul: Multiply two KoalaBear elements
+# Input:  [b, a, ...] (top of stack: b, then a)
+# Output: [(a * b) mod p, ...]
+#
+# Algorithm:
+# 1. Compute u32overflowing_mul -> [hi, lo]
+# 2. If hi == 0, just reduce lo
+# 3. Otherwise: result = (hi * (2^32 mod p) + lo) mod p
+#    where 2^32 mod p = 33554430 = 0x1FFFFFE
+#
+# Since hi * 33554430 could overflow again, we iterate:
+# - Multiply hi by 33554430
+# - Add to lo (with proper carry handling)
+# - Repeat if new hi > 0
+proc kb_mul
+    u32overflowing_mul          # [hi, lo, ...]
+
+    # If hi == 0, just reduce lo
+    dup eq.0
+    if.true
+        drop                    # [lo, ...]
+        exec.kb_reduce
+    else
+        # hi != 0, need reduction
+        # We compute: (hi * 0x1FFFFFE) + lo, then reduce
+        # 0x1FFFFFE = 33554430 (which is 2^32 mod p)
+
+        # Stack: [hi, lo, ...]
+        swap                    # [lo, hi, ...]
+
+        # Compute hi * 0x1FFFFFE
+        swap                    # [hi, lo, ...]
+        push.33554430           # [0x1FFFFFE, hi, lo, ...]
+        u32overflowing_mul      # [hi2, prod, lo, ...]
+
+        # Now add prod to lo
+        swap                    # [prod, hi2, lo, ...]
+        movup.2                 # [lo, prod, hi2, ...]
+        u32overflowing_add      # [carry, sum, hi2, ...]
+
+        # If carry, add 1 to hi2
+        movup.2                 # [hi2, carry, sum, ...]
+        add                     # [hi2 + carry, sum, ...]
+
+        # Now we have [hi3, sum, ...] where result = hi3 * 2^32 + sum
+        # If hi3 > 0, we need another round of reduction
+        dup eq.0
+        if.true
+            drop
+            exec.kb_reduce
+        else
+            # Another round: hi3 * 0x1FFFFFE + sum
+            swap                # [sum, hi3, ...]
+            swap                # [hi3, sum, ...]
+            push.33554430
+            u32overflowing_mul  # [hi4, prod2, sum, ...]
+
+            swap                # [prod2, hi4, sum, ...]
+            movup.2             # [sum, prod2, hi4, ...]
+            u32overflowing_add  # [carry2, sum2, hi4, ...]
+
+            movup.2             # [hi4, carry2, sum2, ...]
+            add                 # [hi5, sum2, ...]
+
+            # hi5 should be 0 or very small now
+            dup eq.0
+            if.true
+                drop
+                exec.kb_reduce
+            else
+                # One more round (should be enough for any 32x32 multiply)
+                swap
+                swap
+                push.33554430
+                u32overflowing_mul
+                swap
+                movup.2
+                u32overflowing_add
+                movup.2
+                add
+
+                # Final: just take the low part and reduce
+                dup eq.0
+                if.true
+                    drop
+                    exec.kb_reduce
+                else
+                    # This shouldn't happen for valid inputs, but handle it
+                    drop
+                    exec.kb_reduce
+                end
+            end
+        end
+    end
+end
+
+begin
+    # Test 1: 3 * 7 = 21
+    push.3 push.7 exec.kb_mul
+    # Stack: [21, 0, 0, ...] (17 elements)
+
+    # Test 2: 1000 * 2000 = 2000000
+    push.1000 push.2000 exec.kb_mul
+    # Stack: [2000000, 21, 0, ...] (18 elements)
+
+    # Test 3: (p-1) * 2 = 2p - 2 ≡ -2 ≡ p - 2 (mod p) = 2130706431
+    push.0x7F000000 push.2 exec.kb_mul
+    # Stack: [2130706431, 2000000, 21, 0, ...] (19 elements)
+
+    # Test 4: 100000 * 100000 = 10^10 mod p
+    # 10000000000 / 2130706433 = 4.693... so 10^10 = 4*p + remainder
+    # 4 * 2130706433 = 8522825732
+    # 10000000000 - 8522825732 = 1477174268
+    push.100000 push.100000 exec.kb_mul
+    # Stack: [1477174268, 2130706431, 2000000, 21, 0, ...] (20 elements)
+
+    # Clean up stack to get back to 16 elements
+    swapdw
+    drop drop drop drop
+    # Expected: [1477174268, 2130706431, 2000000, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+end

@@ -1,0 +1,9 @@
+[package]
+name = "verifier"
+version = "0.1.0"
+edition = "2021"
+description = "Zisk guest program for leanSig XMSS signature verification"
+
+[dependencies]
+ziskos = { git = "https://github.com/0xPolygonHermez/zisk.git" }
+leansig-minimal = { path = "../leansig-minimal" }

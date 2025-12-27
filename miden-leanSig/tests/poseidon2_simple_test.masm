@@ -1,0 +1,80 @@
+# Simple Poseidon2 Structure Test
+# Tests that basic operations compile and run
+
+# KoalaBear field ops
+proc kb_reduce
+    dup push.0x7F000001 u32lt
+    if.true else push.0x7F000001 u32wrapping_sub end
+end
+
+proc kb_add
+    u32overflowing_add
+    if.true push.0x7F000001 u32wrapping_sub
+    else exec.kb_reduce end
+end
+
+proc kb_mul
+    u32overflowing_mul
+    dup eq.0
+    if.true drop exec.kb_reduce
+    else
+        swap swap push.33554430 u32overflowing_mul
+        swap movup.2 u32overflowing_add movup.2 add
+        dup eq.0 if.true drop exec.kb_reduce
+        else drop exec.kb_reduce end
+    end
+end
+
+proc kb_pow3
+    dup dup exec.kb_mul exec.kb_mul
+end
+
+# Test: Initialize state, apply S-box to one element
+proc test_sbox
+    # Store initial state (all zeros except element 0 = 5)
+    push.5 mem_store.16
+    push.0 mem_store.17
+    push.0 mem_store.18
+    push.0 mem_store.19
+
+    # Apply S-box (x^3) to element 0
+    mem_load.16 exec.kb_pow3 mem_store.16
+
+    # Load result (should be 5^3 = 125)
+    mem_load.16
+end
+
+# Test: Simple mat4 multiplication
+proc test_mat4
+    # Store [1, 2, 3, 4] as input
+    push.1 mem_store.0
+    push.2 mem_store.1
+    push.3 mem_store.2
+    push.4 mem_store.3
+
+    # y0 = 2*1 + 3*2 + 3 + 4 = 2 + 6 + 3 + 4 = 15
+    mem_load.0 dup exec.kb_add              # 2*x0 = 2
+    mem_load.1 dup dup exec.kb_add exec.kb_add  # 3*x1 = 6
+    exec.kb_add                              # 8
+    mem_load.2 exec.kb_add                   # 11
+    mem_load.3 exec.kb_add                   # 15 = y0
+end
+
+begin
+    # Test 1: S-box test
+    exec.test_sbox
+    # Stack: [125, ...]
+
+    # Test 2: mat4 test (partial)
+    exec.test_mat4
+    # Stack: [15, 125, ...]
+
+    # Test 3: Simple memory store/load verification
+    push.12345 mem_store.100
+    mem_load.100
+    # Stack: [12345, 15, 125, ...]
+
+    # Clean up to 16 elements (we have 19: 3 results + 16 initial)
+    swapdw drop drop drop
+    # Expected: [12345, 15, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+end

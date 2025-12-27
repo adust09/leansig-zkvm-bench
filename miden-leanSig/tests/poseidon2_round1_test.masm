@@ -1,0 +1,258 @@
+# Poseidon2-16 Single Round Test
+# Test just the first full round to isolate issues
+
+# ============================================================================
+# KoalaBear Field Operations
+# ============================================================================
+proc kb_reduce
+    dup push.0x7F000001 u32lt
+    if.true else push.0x7F000001 u32wrapping_sub end
+end
+
+proc kb_add
+    u32overflowing_add
+    if.true push.0x7F000001 u32wrapping_sub
+    else exec.kb_reduce end
+end
+
+proc kb_mul
+    u32overflowing_mul
+    dup eq.0
+    if.true drop exec.kb_reduce
+    else
+        # Round 1
+        push.33554430 u32overflowing_mul
+        swap movup.2 u32overflowing_add movup.2 add
+        dup eq.0 if.true drop exec.kb_reduce
+        else
+            # Round 2
+            push.33554430 u32overflowing_mul
+            swap movup.2 u32overflowing_add movup.2 add
+            dup eq.0 if.true drop exec.kb_reduce
+            else
+                # Round 3
+                push.33554430 u32overflowing_mul
+                swap movup.2 u32overflowing_add movup.2 add
+                dup eq.0 if.true drop exec.kb_reduce
+                else
+                    # Round 4
+                    push.33554430 u32overflowing_mul
+                    swap movup.2 u32overflowing_add movup.2 add
+                    dup eq.0 if.true drop exec.kb_reduce
+                    else
+                        # Round 5
+                        push.33554430 u32overflowing_mul
+                        swap movup.2 u32overflowing_add movup.2 add
+                        dup eq.0 if.true drop exec.kb_reduce
+                        else
+                            # Round 6 (final)
+                            push.33554430 u32overflowing_mul
+                            swap movup.2 u32overflowing_add movup.2 add
+                            drop exec.kb_reduce
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+proc kb_pow3
+    dup dup exec.kb_mul exec.kb_mul
+end
+
+# ============================================================================
+# Load Test Input into State (mem[16..31])
+# ============================================================================
+proc load_test_input
+    push.894848333 mem_store.16
+    push.1437655012 mem_store.17
+    push.1200606629 mem_store.18
+    push.1690012884 mem_store.19
+    push.71131202 mem_store.20
+    push.1749206695 mem_store.21
+    push.1717947831 mem_store.22
+    push.120589055 mem_store.23
+    push.19776022 mem_store.24
+    push.42382981 mem_store.25
+    push.1831865506 mem_store.26
+    push.724844064 mem_store.27
+    push.171220207 mem_store.28
+    push.1299207443 mem_store.29
+    push.227047920 mem_store.30
+    push.1783754913 mem_store.31
+end
+
+# ============================================================================
+# Load Round 0 Constants
+# ============================================================================
+proc load_round0_constants
+    push.2128964168 mem_store.256
+    push.288780357 mem_store.257
+    push.316938561 mem_store.258
+    push.2126233899 mem_store.259
+    push.426817493 mem_store.260
+    push.1714118888 mem_store.261
+    push.1045008582 mem_store.262
+    push.1738510837 mem_store.263
+    push.889721787 mem_store.264
+    push.8866516 mem_store.265
+    push.681576474 mem_store.266
+    push.419059826 mem_store.267
+    push.1596305521 mem_store.268
+    push.1583176088 mem_store.269
+    push.1584387047 mem_store.270
+    push.1529751136 mem_store.271
+end
+
+# ============================================================================
+# S-box Layers
+# ============================================================================
+proc sbox_full
+    mem_load.16 exec.kb_pow3 mem_store.16
+    mem_load.17 exec.kb_pow3 mem_store.17
+    mem_load.18 exec.kb_pow3 mem_store.18
+    mem_load.19 exec.kb_pow3 mem_store.19
+    mem_load.20 exec.kb_pow3 mem_store.20
+    mem_load.21 exec.kb_pow3 mem_store.21
+    mem_load.22 exec.kb_pow3 mem_store.22
+    mem_load.23 exec.kb_pow3 mem_store.23
+    mem_load.24 exec.kb_pow3 mem_store.24
+    mem_load.25 exec.kb_pow3 mem_store.25
+    mem_load.26 exec.kb_pow3 mem_store.26
+    mem_load.27 exec.kb_pow3 mem_store.27
+    mem_load.28 exec.kb_pow3 mem_store.28
+    mem_load.29 exec.kb_pow3 mem_store.29
+    mem_load.30 exec.kb_pow3 mem_store.30
+    mem_load.31 exec.kb_pow3 mem_store.31
+end
+
+# ============================================================================
+# 4x4 MDS Matrix
+# ============================================================================
+proc mat4_chunk
+    dup mem_load mem_store.0
+    dup push.1 add mem_load mem_store.1
+    dup push.2 add mem_load mem_store.2
+    push.3 add mem_load mem_store.3
+
+    # y0 = 2*x0 + 3*x1 + x2 + x3
+    mem_load.0 dup exec.kb_add
+    mem_load.1 dup dup exec.kb_add exec.kb_add
+    exec.kb_add
+    mem_load.2 exec.kb_add
+    mem_load.3 exec.kb_add
+    mem_store.4
+
+    # y1 = x0 + 2*x1 + 3*x2 + x3
+    mem_load.0
+    mem_load.1 dup exec.kb_add exec.kb_add
+    mem_load.2 dup dup exec.kb_add exec.kb_add exec.kb_add
+    mem_load.3 exec.kb_add
+    mem_store.5
+
+    # y2 = x0 + x1 + 2*x2 + 3*x3
+    mem_load.0 mem_load.1 exec.kb_add
+    mem_load.2 dup exec.kb_add exec.kb_add
+    mem_load.3 dup dup exec.kb_add exec.kb_add exec.kb_add
+    mem_store.6
+
+    # y3 = 3*x0 + x1 + x2 + 2*x3
+    mem_load.0 dup dup exec.kb_add exec.kb_add
+    mem_load.1 exec.kb_add
+    mem_load.2 exec.kb_add
+    mem_load.3 dup exec.kb_add exec.kb_add
+    mem_store.7
+end
+
+proc mat4_store_back
+    dup mem_load.4 swap mem_store
+    dup push.1 add mem_load.5 swap mem_store
+    dup push.2 add mem_load.6 swap mem_store
+    push.3 add mem_load.7 swap mem_store
+end
+
+# ============================================================================
+# External Linear Layer (MDS)
+# ============================================================================
+proc mds_external
+    push.16 exec.mat4_chunk push.16 exec.mat4_store_back
+    push.20 exec.mat4_chunk push.20 exec.mat4_store_back
+    push.24 exec.mat4_chunk push.24 exec.mat4_store_back
+    push.28 exec.mat4_chunk push.28 exec.mat4_store_back
+
+    mem_load.16 mem_load.20 exec.kb_add
+    mem_load.24 exec.kb_add mem_load.28 exec.kb_add
+    mem_store.8
+
+    mem_load.17 mem_load.21 exec.kb_add
+    mem_load.25 exec.kb_add mem_load.29 exec.kb_add
+    mem_store.9
+
+    mem_load.18 mem_load.22 exec.kb_add
+    mem_load.26 exec.kb_add mem_load.30 exec.kb_add
+    mem_store.10
+
+    mem_load.19 mem_load.23 exec.kb_add
+    mem_load.27 exec.kb_add mem_load.31 exec.kb_add
+    mem_store.11
+
+    mem_load.16 mem_load.8 exec.kb_add mem_store.16
+    mem_load.17 mem_load.9 exec.kb_add mem_store.17
+    mem_load.18 mem_load.10 exec.kb_add mem_store.18
+    mem_load.19 mem_load.11 exec.kb_add mem_store.19
+    mem_load.20 mem_load.8 exec.kb_add mem_store.20
+    mem_load.21 mem_load.9 exec.kb_add mem_store.21
+    mem_load.22 mem_load.10 exec.kb_add mem_store.22
+    mem_load.23 mem_load.11 exec.kb_add mem_store.23
+    mem_load.24 mem_load.8 exec.kb_add mem_store.24
+    mem_load.25 mem_load.9 exec.kb_add mem_store.25
+    mem_load.26 mem_load.10 exec.kb_add mem_store.26
+    mem_load.27 mem_load.11 exec.kb_add mem_store.27
+    mem_load.28 mem_load.8 exec.kb_add mem_store.28
+    mem_load.29 mem_load.9 exec.kb_add mem_store.29
+    mem_load.30 mem_load.10 exec.kb_add mem_store.30
+    mem_load.31 mem_load.11 exec.kb_add mem_store.31
+end
+
+# ============================================================================
+# Add Round Constants
+# ============================================================================
+proc add_rc_16
+    dup mem_load mem_load.16 exec.kb_add mem_store.16
+    dup push.1 add mem_load mem_load.17 exec.kb_add mem_store.17
+    dup push.2 add mem_load mem_load.18 exec.kb_add mem_store.18
+    dup push.3 add mem_load mem_load.19 exec.kb_add mem_store.19
+    dup push.4 add mem_load mem_load.20 exec.kb_add mem_store.20
+    dup push.5 add mem_load mem_load.21 exec.kb_add mem_store.21
+    dup push.6 add mem_load mem_load.22 exec.kb_add mem_store.22
+    dup push.7 add mem_load mem_load.23 exec.kb_add mem_store.23
+    dup push.8 add mem_load mem_load.24 exec.kb_add mem_store.24
+    dup push.9 add mem_load mem_load.25 exec.kb_add mem_store.25
+    dup push.10 add mem_load mem_load.26 exec.kb_add mem_store.26
+    dup push.11 add mem_load mem_load.27 exec.kb_add mem_store.27
+    dup push.12 add mem_load mem_load.28 exec.kb_add mem_store.28
+    dup push.13 add mem_load mem_load.29 exec.kb_add mem_store.29
+    dup push.14 add mem_load mem_load.30 exec.kb_add mem_store.30
+    push.15 add mem_load mem_load.31 exec.kb_add mem_store.31
+end
+
+# ============================================================================
+# Main: Run just one full round and output state
+# ============================================================================
+begin
+    exec.load_round0_constants
+    exec.load_test_input
+
+    # Apply round 0: RC -> Sbox -> MDS
+    push.256 exec.add_rc_16
+    exec.sbox_full
+    exec.mds_external
+
+    # Output first 4 elements
+    mem_load.16 mem_load.17 mem_load.18 mem_load.19
+    # Stack: [s19, s18, s17, s16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] = 20 elements
+    # Need to reduce to 16
+    swapdw drop drop drop drop
+    # Stack: [0, 0, 0, 0, s19, s18, s17, s16, 0, 0, 0, 0, 0, 0, 0, 0] = 16 elements
+end

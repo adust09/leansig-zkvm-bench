@@ -1,0 +1,38 @@
+# Test: Poseidon2 Constants Loading
+# Verifies that round constants are correctly stored in memory
+
+proc load_external_initial_round_0
+    push.2128964168 mem_store.256
+    push.288780357 mem_store.257
+    push.316938561 mem_store.258
+    push.2126233899 mem_store.259
+end
+
+proc load_internal_first_4
+    push.2102596038 mem_store.384
+    push.1533193853 mem_store.385
+    push.1436311464 mem_store.386
+    push.2012303432 mem_store.387
+end
+
+begin
+    # Load some constants
+    exec.load_external_initial_round_0
+    exec.load_internal_first_4
+
+    # Read them back from memory
+    mem_load.256    # Should be 2128964168
+    mem_load.257    # Should be 288780357
+    mem_load.384    # Should be 2102596038
+    mem_load.385    # Should be 1533193853
+
+    # Stack: [1533193853, 2102596038, 288780357, 2128964168, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    # That's 4 results + 16 initial = 20 elements
+
+    # Drop 4 zeros
+    swapdw
+    drop drop drop drop
+    # Now 16 elements: [1533193853, 2102596038, 288780357, 2128964168, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    # Expected output: [1533193853, 2102596038, 288780357, 2128964168, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+end

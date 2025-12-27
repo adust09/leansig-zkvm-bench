@@ -1,0 +1,11 @@
+[package]
+name = "leansig_verify"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+
+[dependencies]
+risc0-zkvm = { version = "^3.0.4", default-features = false }
+leansig-core = { path = "../../core", default-features = false }
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }

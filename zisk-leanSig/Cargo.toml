@@ -1,0 +1,23 @@
+[workspace]
+resolver = "2"
+members = [
+    "leansig-minimal",
+    "verifier",
+    "test-gen",
+]
+
+[workspace.dependencies]
+# Plonky3 - no_std compatible
+p3-field = { git = "https://github.com/Plonky3/Plonky3", rev = "a33a312", default-features = false }
+p3-koala-bear = { git = "https://github.com/Plonky3/Plonky3", rev = "a33a312", default-features = false }
+p3-poseidon2 = { git = "https://github.com/Plonky3/Plonky3", rev = "a33a312", default-features = false }
+p3-symmetric = { git = "https://github.com/Plonky3/Plonky3", rev = "a33a312", default-features = false }
+
+# Hashing
+sha3 = { version = "0.10.8", default-features = false }
+
+# Serialization
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+
+# For test-gen only (std)
+leansig = { git = "https://github.com/leanEthereum/leanSig", branch = "main" }

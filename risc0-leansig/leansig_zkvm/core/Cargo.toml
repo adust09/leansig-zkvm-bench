@@ -1,0 +1,17 @@
+[package]
+name = "leansig-core"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["std"]
+std = ["serde/std"]
+
+[dependencies]
+# Plonky3 field types - use same revision as leanSig for API compatibility
+p3-field = { git = "https://github.com/Plonky3/Plonky3.git", rev = "a33a312", default-features = false }
+p3-koala-bear = { git = "https://github.com/Plonky3/Plonky3.git", rev = "a33a312", default-features = false }
+p3-symmetric = { git = "https://github.com/Plonky3/Plonky3.git", rev = "a33a312", default-features = false }
+
+# Serialization
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }

@@ -1,0 +1,347 @@
+# Poseidon2-16 Permutation for KoalaBear Field
+#
+# Structure:
+# - 4 initial full rounds (external layer)
+# - 20 partial rounds (internal layer)
+# - 4 final full rounds (external layer)
+#
+# State is stored in memory at addresses 16-31
+# Round constants and diagonal at higher addresses (see constants.masm)
+
+# ============================================================================
+# KoalaBear Field Operations (inlined)
+# ============================================================================
+proc kb_reduce
+    dup
+    push.0x7F000001
+    u32lt
+    if.true
+    else
+        push.0x7F000001
+        u32wrapping_sub
+    end
+end
+
+proc kb_add
+    u32overflowing_add
+    if.true
+        push.0x7F000001
+        u32wrapping_sub
+    else
+        exec.kb_reduce
+    end
+end
+
+proc kb_mul
+    u32overflowing_mul
+    dup eq.0
+    if.true
+        drop
+        exec.kb_reduce
+    else
+        swap swap push.33554430 u32overflowing_mul
+        swap movup.2 u32overflowing_add movup.2 add
+        dup eq.0
+        if.true
+            drop exec.kb_reduce
+        else
+            swap swap push.33554430 u32overflowing_mul
+            swap movup.2 u32overflowing_add movup.2 add
+            dup eq.0
+            if.true drop exec.kb_reduce
+            else
+                swap swap push.33554430 u32overflowing_mul
+                swap movup.2 u32overflowing_add movup.2 add
+                dup eq.0 if.true drop exec.kb_reduce
+                else drop exec.kb_reduce end
+            end
+        end
+    end
+end
+
+proc kb_pow3
+    dup dup exec.kb_mul exec.kb_mul
+end
+
+# ============================================================================
+# S-box Layer: Apply x^3 to all elements or just element 0
+# ============================================================================
+
+# sbox_full: Apply S-box to all 16 elements
+# State in memory 16-31
+proc sbox_full
+    mem_load.16 exec.kb_pow3 mem_store.16
+    mem_load.17 exec.kb_pow3 mem_store.17
+    mem_load.18 exec.kb_pow3 mem_store.18
+    mem_load.19 exec.kb_pow3 mem_store.19
+    mem_load.20 exec.kb_pow3 mem_store.20
+    mem_load.21 exec.kb_pow3 mem_store.21
+    mem_load.22 exec.kb_pow3 mem_store.22
+    mem_load.23 exec.kb_pow3 mem_store.23
+    mem_load.24 exec.kb_pow3 mem_store.24
+    mem_load.25 exec.kb_pow3 mem_store.25
+    mem_load.26 exec.kb_pow3 mem_store.26
+    mem_load.27 exec.kb_pow3 mem_store.27
+    mem_load.28 exec.kb_pow3 mem_store.28
+    mem_load.29 exec.kb_pow3 mem_store.29
+    mem_load.30 exec.kb_pow3 mem_store.30
+    mem_load.31 exec.kb_pow3 mem_store.31
+end
+
+# sbox_partial: Apply S-box only to element 0
+proc sbox_partial
+    mem_load.16 exec.kb_pow3 mem_store.16
+end
+
+# ============================================================================
+# Add Round Constants
+# ============================================================================
+
+# add_external_rc: Add round constants for external round
+# Input: round_base_addr on stack (256 for initial round 0, etc.)
+# State in memory 16-31
+proc add_external_rc
+    # Stack: [base_addr, ...]
+    dup mem_load                # Load RC[0]
+    mem_load.16 exec.kb_add mem_store.16
+    dup push.1 add mem_load
+    mem_load.17 exec.kb_add mem_store.17
+    dup push.2 add mem_load
+    mem_load.18 exec.kb_add mem_store.18
+    dup push.3 add mem_load
+    mem_load.19 exec.kb_add mem_store.19
+    dup push.4 add mem_load
+    mem_load.20 exec.kb_add mem_store.20
+    dup push.5 add mem_load
+    mem_load.21 exec.kb_add mem_store.21
+    dup push.6 add mem_load
+    mem_load.22 exec.kb_add mem_store.22
+    dup push.7 add mem_load
+    mem_load.23 exec.kb_add mem_store.23
+    dup push.8 add mem_load
+    mem_load.24 exec.kb_add mem_store.24
+    dup push.9 add mem_load
+    mem_load.25 exec.kb_add mem_store.25
+    dup push.10 add mem_load
+    mem_load.26 exec.kb_add mem_store.26
+    dup push.11 add mem_load
+    mem_load.27 exec.kb_add mem_store.27
+    dup push.12 add mem_load
+    mem_load.28 exec.kb_add mem_store.28
+    dup push.13 add mem_load
+    mem_load.29 exec.kb_add mem_store.29
+    dup push.14 add mem_load
+    mem_load.30 exec.kb_add mem_store.30
+    push.15 add mem_load
+    mem_load.31 exec.kb_add mem_store.31
+end
+
+# add_internal_rc: Add round constant to element 0 only
+# Input: rc_addr on stack (384 for internal round 0, etc.)
+proc add_internal_rc
+    mem_load                    # Load RC value
+    mem_load.16 exec.kb_add mem_store.16
+end
+
+# ============================================================================
+# 4x4 MDS Matrix (for external layer)
+# ============================================================================
+# Matrix: [[2,3,1,1],[1,2,3,1],[1,1,2,3],[3,1,1,2]]
+# Input: [x0, x1, x2, x3] on stack (top is x3)
+# Output: [y0, y1, y2, y3] on stack
+proc mat4
+    # Store inputs
+    mem_store.0 mem_store.1 mem_store.2 mem_store.3
+
+    # y0 = 2*x0 + 3*x1 + x2 + x3
+    mem_load.3 dup exec.kb_add  # 2*x0
+    mem_load.2 dup dup exec.kb_add exec.kb_add  # 3*x1
+    exec.kb_add
+    mem_load.1 exec.kb_add
+    mem_load.0 exec.kb_add
+    mem_store.4  # y0
+
+    # y1 = x0 + 2*x1 + 3*x2 + x3
+    mem_load.3  # x0
+    mem_load.2 dup exec.kb_add  # 2*x1
+    exec.kb_add
+    mem_load.1 dup dup exec.kb_add exec.kb_add  # 3*x2
+    exec.kb_add
+    mem_load.0 exec.kb_add
+    mem_store.5  # y1
+
+    # y2 = x0 + x1 + 2*x2 + 3*x3
+    mem_load.3 mem_load.2 exec.kb_add
+    mem_load.1 dup exec.kb_add exec.kb_add
+    mem_load.0 dup dup exec.kb_add exec.kb_add exec.kb_add
+    mem_store.6  # y2
+
+    # y3 = 3*x0 + x1 + x2 + 2*x3
+    mem_load.3 dup dup exec.kb_add exec.kb_add
+    mem_load.2 exec.kb_add
+    mem_load.1 exec.kb_add
+    mem_load.0 dup exec.kb_add exec.kb_add
+    mem_store.7  # y3
+
+    # Load results
+    mem_load.4 mem_load.5 mem_load.6 mem_load.7
+end
+
+# ============================================================================
+# External Linear Layer (MDS for width 16)
+# ============================================================================
+proc mds_external
+    # Apply mat4 to chunk 0 (elements 16-19)
+    mem_load.16 mem_load.17 mem_load.18 mem_load.19
+    exec.mat4
+    mem_store.19 mem_store.18 mem_store.17 mem_store.16
+
+    # Apply mat4 to chunk 1 (elements 20-23)
+    mem_load.20 mem_load.21 mem_load.22 mem_load.23
+    exec.mat4
+    mem_store.23 mem_store.22 mem_store.21 mem_store.20
+
+    # Apply mat4 to chunk 2 (elements 24-27)
+    mem_load.24 mem_load.25 mem_load.26 mem_load.27
+    exec.mat4
+    mem_store.27 mem_store.26 mem_store.25 mem_store.24
+
+    # Apply mat4 to chunk 3 (elements 28-31)
+    mem_load.28 mem_load.29 mem_load.30 mem_load.31
+    exec.mat4
+    mem_store.31 mem_store.30 mem_store.29 mem_store.28
+
+    # Compute sums: sum[j] = s[j] + s[j+4] + s[j+8] + s[j+12]
+    mem_load.16 mem_load.20 exec.kb_add
+    mem_load.24 exec.kb_add mem_load.28 exec.kb_add
+    mem_store.8  # sum0
+
+    mem_load.17 mem_load.21 exec.kb_add
+    mem_load.25 exec.kb_add mem_load.29 exec.kb_add
+    mem_store.9  # sum1
+
+    mem_load.18 mem_load.22 exec.kb_add
+    mem_load.26 exec.kb_add mem_load.30 exec.kb_add
+    mem_store.10  # sum2
+
+    mem_load.19 mem_load.23 exec.kb_add
+    mem_load.27 exec.kb_add mem_load.31 exec.kb_add
+    mem_store.11  # sum3
+
+    # Add sums to each element
+    mem_load.16 mem_load.8 exec.kb_add mem_store.16
+    mem_load.17 mem_load.9 exec.kb_add mem_store.17
+    mem_load.18 mem_load.10 exec.kb_add mem_store.18
+    mem_load.19 mem_load.11 exec.kb_add mem_store.19
+    mem_load.20 mem_load.8 exec.kb_add mem_store.20
+    mem_load.21 mem_load.9 exec.kb_add mem_store.21
+    mem_load.22 mem_load.10 exec.kb_add mem_store.22
+    mem_load.23 mem_load.11 exec.kb_add mem_store.23
+    mem_load.24 mem_load.8 exec.kb_add mem_store.24
+    mem_load.25 mem_load.9 exec.kb_add mem_store.25
+    mem_load.26 mem_load.10 exec.kb_add mem_store.26
+    mem_load.27 mem_load.11 exec.kb_add mem_store.27
+    mem_load.28 mem_load.8 exec.kb_add mem_store.28
+    mem_load.29 mem_load.9 exec.kb_add mem_store.29
+    mem_load.30 mem_load.10 exec.kb_add mem_store.30
+    mem_load.31 mem_load.11 exec.kb_add mem_store.31
+end
+
+# ============================================================================
+# Internal Linear Layer (1 + Diag(V))
+# ============================================================================
+proc mds_internal
+    # Compute sum of all 16 elements
+    mem_load.16 mem_load.17 exec.kb_add
+    mem_load.18 exec.kb_add mem_load.19 exec.kb_add
+    mem_load.20 exec.kb_add mem_load.21 exec.kb_add
+    mem_load.22 exec.kb_add mem_load.23 exec.kb_add
+    mem_load.24 exec.kb_add mem_load.25 exec.kb_add
+    mem_load.26 exec.kb_add mem_load.27 exec.kb_add
+    mem_load.28 exec.kb_add mem_load.29 exec.kb_add
+    mem_load.30 exec.kb_add mem_load.31 exec.kb_add
+    mem_store.12  # Store sum
+
+    # For each element: state[i] = state[i] * diag[i] + sum
+    mem_load.16 mem_load.416 exec.kb_mul mem_load.12 exec.kb_add mem_store.16
+    mem_load.17 mem_load.417 exec.kb_mul mem_load.12 exec.kb_add mem_store.17
+    mem_load.18 mem_load.418 exec.kb_mul mem_load.12 exec.kb_add mem_store.18
+    mem_load.19 mem_load.419 exec.kb_mul mem_load.12 exec.kb_add mem_store.19
+    mem_load.20 mem_load.420 exec.kb_mul mem_load.12 exec.kb_add mem_store.20
+    mem_load.21 mem_load.421 exec.kb_mul mem_load.12 exec.kb_add mem_store.21
+    mem_load.22 mem_load.422 exec.kb_mul mem_load.12 exec.kb_add mem_store.22
+    mem_load.23 mem_load.423 exec.kb_mul mem_load.12 exec.kb_add mem_store.23
+    mem_load.24 mem_load.424 exec.kb_mul mem_load.12 exec.kb_add mem_store.24
+    mem_load.25 mem_load.425 exec.kb_mul mem_load.12 exec.kb_add mem_store.25
+    mem_load.26 mem_load.426 exec.kb_mul mem_load.12 exec.kb_add mem_store.26
+    mem_load.27 mem_load.427 exec.kb_mul mem_load.12 exec.kb_add mem_store.27
+    mem_load.28 mem_load.428 exec.kb_mul mem_load.12 exec.kb_add mem_store.28
+    mem_load.29 mem_load.429 exec.kb_mul mem_load.12 exec.kb_add mem_store.29
+    mem_load.30 mem_load.430 exec.kb_mul mem_load.12 exec.kb_add mem_store.30
+    mem_load.31 mem_load.431 exec.kb_mul mem_load.12 exec.kb_add mem_store.31
+end
+
+# ============================================================================
+# Full Round (External)
+# ============================================================================
+# Input: round number (0-3 for initial, 0-3 for final)
+# base_addr: 256 for initial rounds, 320 for final rounds
+proc full_round
+    # Stack: [base_addr, ...]
+    exec.add_external_rc
+    exec.sbox_full
+    exec.mds_external
+end
+
+# ============================================================================
+# Partial Round (Internal)
+# ============================================================================
+# Input: round number 0-19, base for internal RC is 384
+proc partial_round
+    # Stack: [round_num, ...]
+    push.384 add               # Compute RC address
+    exec.add_internal_rc
+    exec.sbox_partial
+    exec.mds_internal
+end
+
+# ============================================================================
+# Poseidon2-16 Full Permutation
+# ============================================================================
+# State must be loaded in memory at addresses 16-31
+# Constants must be loaded first
+proc poseidon2_16
+    # Initial 4 full rounds
+    push.256 exec.full_round    # Round 0
+    push.272 exec.full_round    # Round 1
+    push.288 exec.full_round    # Round 2
+    push.304 exec.full_round    # Round 3
+
+    # 20 partial rounds
+    push.0 exec.partial_round
+    push.1 exec.partial_round
+    push.2 exec.partial_round
+    push.3 exec.partial_round
+    push.4 exec.partial_round
+    push.5 exec.partial_round
+    push.6 exec.partial_round
+    push.7 exec.partial_round
+    push.8 exec.partial_round
+    push.9 exec.partial_round
+    push.10 exec.partial_round
+    push.11 exec.partial_round
+    push.12 exec.partial_round
+    push.13 exec.partial_round
+    push.14 exec.partial_round
+    push.15 exec.partial_round
+    push.16 exec.partial_round
+    push.17 exec.partial_round
+    push.18 exec.partial_round
+    push.19 exec.partial_round
+
+    # Final 4 full rounds
+    push.320 exec.full_round    # Round 0
+    push.336 exec.full_round    # Round 1
+    push.352 exec.full_round    # Round 2
+    push.368 exec.full_round    # Round 3
+end

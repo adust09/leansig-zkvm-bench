@@ -1,0 +1,837 @@
+   0.655337458s  INFO prepare_target{force=false package_id=leansig-minimal v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal) target="leansig_minimal"}: cargo::core::compiler::fingerprint: fingerprint error for leansig-minimal v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("leansig_minimal", ["lib"], "/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal/src/lib.rs", Edition2021) }
+   0.656124583s  INFO prepare_target{force=false package_id=leansig-minimal v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal) target="leansig_minimal"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/leansig-minimal-ea1d9ca0d1f130b9/lib-leansig_minimal`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: std::rt::lang_start_internal
+  16: _main
+   0.725489167s  INFO prepare_target{force=false package_id=p3-field v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_field"}: cargo::core::compiler::fingerprint: fingerprint error for p3-field v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_field", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/field/src/lib.rs", Edition2024) }
+   0.725511583s  INFO prepare_target{force=false package_id=p3-field v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_field"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-field-5dc2739bd1b155d2/lib-p3_field`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.728612583s  INFO prepare_target{force=false package_id=num-bigint v0.4.6 target="num_bigint"}: cargo::core::compiler::fingerprint: fingerprint error for num-bigint v0.4.6/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("num_bigint", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-bigint-0.4.6/src/lib.rs", Edition2021) }
+   0.728652500s  INFO prepare_target{force=false package_id=num-bigint v0.4.6 target="num_bigint"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/num-bigint-2719e91cd8fab0a7/lib-num_bigint`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.729715333s  INFO prepare_target{force=false package_id=num-integer v0.1.46 target="num_integer"}: cargo::core::compiler::fingerprint: fingerprint error for num-integer v0.1.46/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("num_integer", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-integer-0.1.46/src/lib.rs", Edition2018) }
+   0.729735042s  INFO prepare_target{force=false package_id=num-integer v0.1.46 target="num_integer"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/num-integer-a8a73eabc03e67dd/lib-num_integer`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: std::rt::lang_start_internal
+  19: _main
+   0.758612125s  INFO prepare_target{force=false package_id=p3-koala-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_koala_bear"}: cargo::core::compiler::fingerprint: fingerprint error for p3-koala-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_koala_bear", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/koala-bear/src/lib.rs", Edition2024) }
+   0.758638542s  INFO prepare_target{force=false package_id=p3-koala-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_koala_bear"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-koala-bear-279a91afdf5b0703/lib-p3_koala_bear`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.759660500s  INFO prepare_target{force=false package_id=p3-monty-31 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_monty_31"}: cargo::core::compiler::fingerprint: fingerprint error for p3-monty-31 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_monty_31", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/monty-31/src/lib.rs", Edition2024) }
+   0.759676792s  INFO prepare_target{force=false package_id=p3-monty-31 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_monty_31"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-monty-31-a5aed7116a682a19/lib-p3_monty_31`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.761605208s  INFO prepare_target{force=false package_id=p3-dft v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_dft"}: cargo::core::compiler::fingerprint: fingerprint error for p3-dft v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_dft", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/dft/src/lib.rs", Edition2024) }
+   0.761618875s  INFO prepare_target{force=false package_id=p3-dft v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_dft"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-dft-bb64ebcca2ec9ee0/lib-p3_dft`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: std::rt::lang_start_internal
+  19: _main
+   0.762545083s  INFO prepare_target{force=false package_id=p3-matrix v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_matrix"}: cargo::core::compiler::fingerprint: fingerprint error for p3-matrix v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_matrix", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/matrix/src/lib.rs", Edition2024) }
+   0.762554250s  INFO prepare_target{force=false package_id=p3-matrix v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_matrix"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-matrix-dd467940be2a6801/lib-p3_matrix`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: cargo::core::compiler::compile
+  10: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  11: cargo::ops::cargo_compile::compile_ws
+  12: cargo::ops::cargo_compile::compile_with_exec
+  13: cargo::ops::cargo_compile::compile
+  14: cargo::commands::check::exec
+  15: <cargo::cli::Exec>::exec
+  16: cargo::main
+  17: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  18: std::rt::lang_start::<()>::{closure#0}
+  19: std::rt::lang_start_internal
+  20: _main
+   0.764115667s  INFO prepare_target{force=false package_id=transpose v0.2.3 target="transpose"}: cargo::core::compiler::fingerprint: fingerprint error for transpose v0.2.3/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("transpose", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/transpose-0.2.3/src/lib.rs", Edition2015) }
+   0.764136000s  INFO prepare_target{force=false package_id=transpose v0.2.3 target="transpose"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/transpose-c1202d58b9b33093/lib-transpose`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: cargo::core::compiler::compile
+  10: cargo::core::compiler::compile
+  11: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  12: cargo::ops::cargo_compile::compile_ws
+  13: cargo::ops::cargo_compile::compile_with_exec
+  14: cargo::ops::cargo_compile::compile
+  15: cargo::commands::check::exec
+  16: <cargo::cli::Exec>::exec
+  17: cargo::main
+  18: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  19: std::rt::lang_start::<()>::{closure#0}
+  20: std::rt::lang_start_internal
+  21: _main
+   0.767047417s  INFO prepare_target{force=false package_id=p3-mds v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_mds"}: cargo::core::compiler::fingerprint: fingerprint error for p3-mds v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_mds", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/mds/src/lib.rs", Edition2024) }
+   0.767067458s  INFO prepare_target{force=false package_id=p3-mds v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_mds"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-mds-faeaf364e715c196/lib-p3_mds`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: std::rt::lang_start_internal
+  19: _main
+   0.768758917s  INFO prepare_target{force=false package_id=p3-symmetric v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_symmetric"}: cargo::core::compiler::fingerprint: fingerprint error for p3-symmetric v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_symmetric", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/symmetric/src/lib.rs", Edition2024) }
+   0.768776708s  INFO prepare_target{force=false package_id=p3-symmetric v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_symmetric"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-symmetric-1741da21ca5a5c88/lib-p3_symmetric`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: cargo::core::compiler::compile
+  10: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  11: cargo::ops::cargo_compile::compile_ws
+  12: cargo::ops::cargo_compile::compile_with_exec
+  13: cargo::ops::cargo_compile::compile
+  14: cargo::commands::check::exec
+  15: <cargo::cli::Exec>::exec
+  16: cargo::main
+  17: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  18: std::rt::lang_start::<()>::{closure#0}
+  19: std::rt::lang_start_internal
+  20: _main
+   0.770426417s  INFO prepare_target{force=false package_id=p3-poseidon2 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_poseidon2"}: cargo::core::compiler::fingerprint: fingerprint error for p3-poseidon2 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_poseidon2", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/poseidon2/src/lib.rs", Edition2024) }
+   0.770443125s  INFO prepare_target{force=false package_id=p3-poseidon2 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_poseidon2"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-poseidon2-cc06b875485f663c/lib-p3_poseidon2`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: std::rt::lang_start_internal
+  19: _main
+   0.788046458s  INFO prepare_target{force=false package_id=leansig-minimal v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal) target="leansig_minimal"}: cargo::core::compiler::fingerprint: fingerprint error for leansig-minimal v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("leansig_minimal", ["lib"], "/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal/src/lib.rs", Edition2021) }
+   0.788079667s  INFO prepare_target{force=false package_id=leansig-minimal v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal) target="leansig_minimal"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/leansig-minimal-223a8ae24e390a35/test-lib-leansig_minimal`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: std::rt::lang_start_internal
+  16: _main
+   0.817405792s  INFO prepare_target{force=false package_id=test-gen v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen) target="gen-test-vector"}: cargo::core::compiler::fingerprint: fingerprint error for test-gen v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen)/Check { test: false }/TargetInner { name: "gen-test-vector", doc: true, ..: with_path("/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen/src/main.rs", Edition2021) }
+   0.817439500s  INFO prepare_target{force=false package_id=test-gen v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen) target="gen-test-vector"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/test-gen-39946b3b9cb08ebe/bin-gen-test-vector`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: std::rt::lang_start_internal
+  16: _main
+   0.820072208s  INFO prepare_target{force=false package_id=leansig v0.1.0 (https://github.com/leanEthereum/leanSig?branch=main#b621826f) target="leansig"}: cargo::core::compiler::fingerprint: fingerprint error for leansig v0.1.0 (https://github.com/leanEthereum/leanSig?branch=main#b621826f)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("leansig", ["lib"], "/Users/ts21/.cargo/git/checkouts/leansig-eb6084e1fc0dad4d/b621826/src/lib.rs", Edition2024) }
+   0.820102292s  INFO prepare_target{force=false package_id=leansig v0.1.0 (https://github.com/leanEthereum/leanSig?branch=main#b621826f) target="leansig"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/leansig-c8ebffe72daf078a/lib-leansig`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.827063875s  INFO prepare_target{force=false package_id=ethereum_ssz v0.10.0 target="ssz"}: cargo::core::compiler::fingerprint: fingerprint error for ethereum_ssz v0.10.0/Check { test: false }/TargetInner { ..: lib_target("ssz", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ethereum_ssz-0.10.0/src/lib.rs", Edition2021) }
+   0.827090667s  INFO prepare_target{force=false package_id=ethereum_ssz v0.10.0 target="ssz"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/ethereum_ssz-f9c7e052abf79013/lib-ssz`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.828512917s  INFO prepare_target{force=false package_id=alloy-primitives v1.5.2 target="alloy_primitives"}: cargo::core::compiler::fingerprint: fingerprint error for alloy-primitives v1.5.2/Check { test: false }/TargetInner { ..: lib_target("alloy_primitives", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/alloy-primitives-1.5.2/src/lib.rs", Edition2024) }
+   0.828529667s  INFO prepare_target{force=false package_id=alloy-primitives v1.5.2 target="alloy_primitives"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/alloy-primitives-b02ef04e2157f266/lib-alloy_primitives`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: std::rt::lang_start_internal
+  19: _main
+   0.841403375s  INFO prepare_target{force=false package_id=tiny-keccak v2.0.2 target="tiny_keccak"}: cargo::core::compiler::fingerprint: fingerprint error for tiny-keccak v2.0.2/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tiny_keccak", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tiny-keccak-2.0.2/src/lib.rs", Edition2018) }
+   0.841432583s  INFO prepare_target{force=false package_id=tiny-keccak v2.0.2 target="tiny_keccak"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/tiny-keccak-dc1f4b8c435fcc7b/lib-tiny_keccak`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: cargo::core::compiler::compile
+  10: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  11: cargo::ops::cargo_compile::compile_ws
+  12: cargo::ops::cargo_compile::compile_with_exec
+  13: cargo::ops::cargo_compile::compile
+  14: cargo::commands::check::exec
+  15: <cargo::cli::Exec>::exec
+  16: cargo::main
+  17: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  18: std::rt::lang_start::<()>::{closure#0}
+  19: std::rt::lang_start_internal
+  20: _main
+   0.846719542s  INFO prepare_target{force=false package_id=ethereum_serde_utils v0.8.0 target="serde_utils"}: cargo::core::compiler::fingerprint: fingerprint error for ethereum_serde_utils v0.8.0/Check { test: false }/TargetInner { ..: lib_target("serde_utils", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ethereum_serde_utils-0.8.0/src/lib.rs", Edition2021) }
+   0.846746750s  INFO prepare_target{force=false package_id=ethereum_serde_utils v0.8.0 target="serde_utils"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/ethereum_serde_utils-6c334f0cd19aba7e/lib-serde_utils`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: std::rt::lang_start_internal
+  19: _main
+   0.851911417s  INFO prepare_target{force=false package_id=p3-baby-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_baby_bear"}: cargo::core::compiler::fingerprint: fingerprint error for p3-baby-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("p3_baby_bear", ["lib"], "/Users/ts21/.cargo/git/checkouts/plonky3-7d8a3b21a665a86f/a33a312/baby-bear/src/lib.rs", Edition2024) }
+   0.851935500s  INFO prepare_target{force=false package_id=p3-baby-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127) target="p3_baby_bear"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/p3-baby-bear-012e536a731d9519/lib-p3_baby_bear`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.855759167s  INFO prepare_target{force=false package_id=test-gen v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen) target="gen-test-vector"}: cargo::core::compiler::fingerprint: fingerprint error for test-gen v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen)/Check { test: true }/TargetInner { name: "gen-test-vector", doc: true, ..: with_path("/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen/src/main.rs", Edition2021) }
+   0.855782833s  INFO prepare_target{force=false package_id=test-gen v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen) target="gen-test-vector"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/test-gen-591d757f38c88c15/test-bin-gen-test-vector`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: std::rt::lang_start_internal
+  16: _main
+   0.861130417s  INFO prepare_target{force=false package_id=verifier v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier) target="verifier"}: cargo::core::compiler::fingerprint: fingerprint error for verifier v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier)/Check { test: false }/TargetInner { name: "verifier", doc: true, ..: with_path("/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier/src/main.rs", Edition2021) }
+   0.861155875s  INFO prepare_target{force=false package_id=verifier v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier) target="verifier"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/verifier-3093b4cf44e1f364/bin-verifier`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: std::rt::lang_start_internal
+  16: _main
+   0.863285250s  INFO prepare_target{force=false package_id=ziskos v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b) target="ziskos"}: cargo::core::compiler::fingerprint: fingerprint error for ziskos v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("ziskos", ["lib"], "/Users/ts21/.cargo/git/checkouts/zisk-627550f4f7ac9ffb/b3ca745/ziskos/entrypoint/src/lib.rs", Edition2021) }
+   0.863305250s  INFO prepare_target{force=false package_id=ziskos v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b) target="ziskos"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/ziskos-a0c28e3290e02933/lib-ziskos`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.868068083s  INFO prepare_target{force=false package_id=getrandom v0.2.16 target="getrandom"}: cargo::core::compiler::fingerprint: fingerprint error for getrandom v0.2.16/Check { test: false }/TargetInner { ..: lib_target("getrandom", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.16/src/lib.rs", Edition2018) }
+   0.868093875s  INFO prepare_target{force=false package_id=getrandom v0.2.16 target="getrandom"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/getrandom-a9f197d1625f461c/lib-getrandom`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.870079167s  INFO prepare_target{force=false package_id=lazy_static v1.5.0 target="lazy_static"}: cargo::core::compiler::fingerprint: fingerprint error for lazy_static v1.5.0/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("lazy_static", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lazy_static-1.5.0/src/lib.rs", Edition2015) }
+   0.870243750s  INFO prepare_target{force=false package_id=lazy_static v1.5.0 target="lazy_static"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/lazy_static-d917dffe118813fb/lib-lazy_static`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.871668250s  INFO prepare_target{force=false package_id=lib-c v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b) target="lib_c"}: cargo::core::compiler::fingerprint: fingerprint error for lib-c v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("lib_c", ["lib"], "/Users/ts21/.cargo/git/checkouts/zisk-627550f4f7ac9ffb/b3ca745/lib-c/src/lib.rs", Edition2021) }
+   0.871687833s  INFO prepare_target{force=false package_id=lib-c v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b) target="lib_c"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/lib-c-83966160dbd042b9/lib-lib_c`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.877296667s  INFO prepare_target{force=false package_id=rand v0.8.5 target="rand"}: cargo::core::compiler::fingerprint: fingerprint error for rand v0.8.5/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("rand", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rand-0.8.5/src/lib.rs", Edition2018) }
+   0.877323125s  INFO prepare_target{force=false package_id=rand v0.8.5 target="rand"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/rand-274a70b3967755fa/lib-rand`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.878359208s  INFO prepare_target{force=false package_id=rand_chacha v0.3.1 target="rand_chacha"}: cargo::core::compiler::fingerprint: fingerprint error for rand_chacha v0.3.1/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("rand_chacha", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rand_chacha-0.3.1/src/lib.rs", Edition2018) }
+   0.879027583s  INFO prepare_target{force=false package_id=rand_chacha v0.3.1 target="rand_chacha"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/rand_chacha-d30a4499ef26eb4d/lib-rand_chacha`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: std::rt::lang_start_internal
+  19: _main
+   0.880946375s  INFO prepare_target{force=false package_id=rand_core v0.6.4 target="rand_core"}: cargo::core::compiler::fingerprint: fingerprint error for rand_core v0.6.4/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("rand_core", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rand_core-0.6.4/src/lib.rs", Edition2018) }
+   0.880962958s  INFO prepare_target{force=false package_id=rand_core v0.6.4 target="rand_core"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/rand_core-c09b3d064e8136c9/lib-rand_core`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: cargo::core::compiler::compile
+  10: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  11: cargo::ops::cargo_compile::compile_ws
+  12: cargo::ops::cargo_compile::compile_with_exec
+  13: cargo::ops::cargo_compile::compile
+  14: cargo::commands::check::exec
+  15: <cargo::cli::Exec>::exec
+  16: cargo::main
+  17: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  18: std::rt::lang_start::<()>::{closure#0}
+  19: std::rt::lang_start_internal
+  20: _main
+   0.881654167s  INFO prepare_target{force=false package_id=static_assertions v1.1.0 target="static_assertions"}: cargo::core::compiler::fingerprint: fingerprint error for static_assertions v1.1.0/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("static_assertions", ["lib"], "/Users/ts21/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/static_assertions-1.1.0/src/lib.rs", Edition2015) }
+   0.881676042s  INFO prepare_target{force=false package_id=static_assertions v1.1.0 target="static_assertions"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/static_assertions-fca620f2404d24c7/lib-static_assertions`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: std::rt::lang_start_internal
+  18: _main
+   0.886516167s  INFO prepare_target{force=false package_id=verifier v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier) target="verifier"}: cargo::core::compiler::fingerprint: fingerprint error for verifier v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier)/Check { test: true }/TargetInner { name: "verifier", doc: true, ..: with_path("/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier/src/main.rs", Edition2021) }
+   0.886549208s  INFO prepare_target{force=false package_id=verifier v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier) target="verifier"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/ts21/pq/bench-leanSig/zisk-leanSig/target/debug/.fingerprint/verifier-bf07a9ef33d599a6/test-bin-verifier`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: std::rt::lang_start_internal
+  16: _main
+    Checking num-integer v0.1.46
+    Checking tiny-keccak v2.0.2
+    Checking getrandom v0.2.16
+    Checking lib-c v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b)
+    Checking static_assertions v1.1.0
+    Checking lazy_static v1.5.0
+    Checking rand_core v0.6.4
+    Checking alloy-primitives v1.5.2
+    Checking num-bigint v0.4.6
+    Checking transpose v0.2.3
+    Checking rand_chacha v0.3.1
+    Checking rand v0.8.5
+    Checking ethereum_serde_utils v0.8.0
+    Checking p3-field v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking ziskos v0.15.0 (https://github.com/0xPolygonHermez/zisk.git#b3ca745b)
+    Checking ethereum_ssz v0.10.0
+    Checking p3-matrix v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking p3-symmetric v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking p3-dft v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking p3-mds v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking p3-poseidon2 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking p3-monty-31 v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking p3-koala-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking p3-baby-bear v0.3.0 (https://github.com/Plonky3/Plonky3?rev=a33a312#a33a3127)
+    Checking leansig-minimal v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/leansig-minimal)
+    Checking leansig v0.1.0 (https://github.com/leanEthereum/leanSig?branch=main#b621826f)
+    Checking verifier v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/verifier)
+    Checking test-gen v0.1.0 (/Users/ts21/pq/bench-leanSig/zisk-leanSig/test-gen)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.87s

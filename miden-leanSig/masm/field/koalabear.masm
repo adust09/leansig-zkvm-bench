@@ -1,0 +1,169 @@
+# KoalaBear Field Arithmetic for Miden VM
+# Prime p = 2^31 - 2^24 + 1 = 0x7F000001 = 2130706433
+#
+# All values are assumed to be in range [0, p-1]
+# Stack notation: [top, second, third, ...]
+#
+# Key constants:
+#   KOALABEAR_P = 0x7F000001 = 2130706433
+#   2^32 mod p  = 0x1FFFFFE  = 33554430
+#
+# Reduction strategy for multiplication:
+#   For product hi*2^32 + lo, we compute:
+#   result = hi * (2^32 mod p) + lo (mod p)
+#   Since 2^32 mod p = 33554430, this may require iterative reduction.
+
+# kb_reduce: Reduce a u32 value mod p
+# Input:  [a, ...]
+# Output: [a mod p, ...]
+# Assumes a < 2^32
+proc kb_reduce
+    dup                         # [a, a, ...]
+    push.0x7F000001             # [p, a, a, ...]
+    u32lt                       # [a < p, a, ...]
+
+    if.true
+        # a < p, no reduction needed
+    else
+        # a >= p, subtract p
+        push.0x7F000001         # [p, a, ...]
+        u32wrapping_sub         # [a - p, ...]
+    end
+end
+
+# kb_add: Add two KoalaBear elements
+# Input:  [b, a, ...] (top of stack: b, then a)
+# Output: [(a + b) mod p, ...]
+proc kb_add
+    u32overflowing_add          # [carry, sum, ...]
+
+    if.true
+        # Overflow occurred (rare for valid inputs since a,b < p < 2^31)
+        push.0x7F000001
+        u32wrapping_sub
+    else
+        # No overflow, but might need reduction if sum >= p
+        exec.kb_reduce
+    end
+end
+
+# kb_sub: Subtract two KoalaBear elements
+# Input:  [b, a, ...] (top of stack: b, then a)
+# Output: [(a - b) mod p, ...]
+proc kb_sub
+    u32overflowing_sub          # [borrow, diff, ...]
+
+    if.true
+        # Underflow: a < b, add p to get positive result
+        push.0x7F000001         # [p, diff, ...]
+        u32wrapping_add         # [diff + p, ...]
+    else
+        # No underflow, result is already in [0, p-1]
+    end
+end
+
+# kb_mul: Multiply two KoalaBear elements
+# Input:  [b, a, ...] (top of stack: b, then a)
+# Output: [(a * b) mod p, ...]
+#
+# Algorithm:
+# 1. Compute u32overflowing_mul -> [hi, lo]
+# 2. If hi == 0, just reduce lo
+# 3. Otherwise: result = (hi * (2^32 mod p) + lo) mod p
+#    where 2^32 mod p = 33554430 = 0x1FFFFFE
+# 4. Iterate reduction until hi == 0 (needs up to 5-6 rounds)
+proc kb_mul
+    u32overflowing_mul          # [hi, lo, ...]
+
+    # If hi == 0, just reduce lo
+    dup eq.0
+    if.true
+        drop                    # [lo, ...]
+        exec.kb_reduce
+    else
+        # Round 1: Compute (hi * 33554430) + lo
+        # Stack: [hi, lo, ...]
+        push.33554430           # [33554430, hi, lo, ...]
+        u32overflowing_mul      # [hi2, prod, lo, ...]
+        swap movup.2 u32overflowing_add movup.2 add
+        # Stack: [hi_new, lo_new, ...]
+
+        dup eq.0
+        if.true
+            drop exec.kb_reduce
+        else
+            # Round 2
+            push.33554430 u32overflowing_mul
+            swap movup.2 u32overflowing_add movup.2 add
+
+            dup eq.0
+            if.true
+                drop exec.kb_reduce
+            else
+                # Round 3
+                push.33554430 u32overflowing_mul
+                swap movup.2 u32overflowing_add movup.2 add
+
+                dup eq.0
+                if.true
+                    drop exec.kb_reduce
+                else
+                    # Round 4
+                    push.33554430 u32overflowing_mul
+                    swap movup.2 u32overflowing_add movup.2 add
+
+                    dup eq.0
+                    if.true
+                        drop exec.kb_reduce
+                    else
+                        # Round 5
+                        push.33554430 u32overflowing_mul
+                        swap movup.2 u32overflowing_add movup.2 add
+
+                        dup eq.0
+                        if.true
+                            drop exec.kb_reduce
+                        else
+                            # Round 6 (final - should always terminate)
+                            push.33554430 u32overflowing_mul
+                            swap movup.2 u32overflowing_add movup.2 add
+                            drop exec.kb_reduce
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+# kb_pow3: Compute x^3 mod p (for Poseidon2 S-box)
+# Input:  [x, ...]
+# Output: [x^3 mod p, ...]
+proc kb_pow3
+    dup                         # [x, x, ...]
+    dup                         # [x, x, x, ...]
+    exec.kb_mul                 # [x^2, x, ...]
+    exec.kb_mul                 # [x^3, ...]
+end
+
+# kb_neg: Compute -x mod p (additive inverse)
+# Input:  [x, ...]
+# Output: [(-x) mod p, ...]
+proc kb_neg
+    dup eq.0
+    if.true
+        # 0's negation is 0
+    else
+        push.0x7F000001         # [p, x, ...]
+        swap                    # [x, p, ...]
+        u32wrapping_sub         # [p - x, ...]
+    end
+end
+
+# kb_double: Compute 2x mod p (optimized for doubling)
+# Input:  [x, ...]
+# Output: [2x mod p, ...]
+proc kb_double
+    dup                         # [x, x, ...]
+    exec.kb_add                 # [2x mod p, ...]
+end

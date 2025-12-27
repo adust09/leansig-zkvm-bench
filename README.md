@@ -35,18 +35,54 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 | Hash Function | Poseidon2 (KoalaBear field) |
 | Message Length | 32 bytes |
 
-## Results Summary
+## Benchmark Results
 
-### Zisk (macOS Apple Silicon)
+### Comparison Table
+
+| Metric | Zisk | RISC Zero | Miden VM |
+|--------|------|-----------|----------|
+| **VM Cycles** | 158,022 | 11,010,048 | WIP |
+| **Execution Time** | 3.4 ms | 233 ms | - |
+| **Proving Time** | ~26 min | >10 min* | - |
+| **Memory** | ~10.5 GB | - | - |
+| **Platform** | macOS (Apple Silicon) | macOS (M3) | - |
+
+*RISC Zero production proof did not complete within timeout on CPU.
+
+### Zisk
 
 | Metric | Value |
 |--------|-------|
 | VM Cycles | 158,022 |
 | Emulator Time | 3.4 ms |
+| Throughput | 45.97 Msteps/s |
 | Proving Time | ~26 minutes |
 | Memory | ~10.5 GB |
+| AIR Instances | 13 |
 
 See [zisk-leanSig/BENCHMARK.md](zisk-leanSig/BENCHMARK.md) for details.
+
+### RISC Zero
+
+| Metric | Value |
+|--------|-------|
+| Total Cycles | 11,010,048 (~11M) |
+| User Cycles | 10,246,516 (~10.2M) |
+| Execution Time (dev) | 233.39 ms |
+| Receipt Size (dev) | 473 bytes |
+| Proving Time (CPU) | >10 minutes (timeout) |
+
+See [risc0-leansig/FEASIBILITY_REPORT.md](risc0-leansig/FEASIBILITY_REPORT.md) for details.
+
+### Miden VM
+
+Work in progress. Poseidon2 implementation in Miden Assembly is under development.
+
+### Analysis
+
+- **Zisk** achieves ~70x fewer cycles than RISC Zero for the same verification
+- **RISC Zero** overhead is primarily due to software Poseidon2 (no precompile)
+- Both zkVMs use Poseidon2 over KoalaBear field for hash operations
 
 ## Quick Start
 

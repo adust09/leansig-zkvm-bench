@@ -84,6 +84,23 @@ Work in progress. Poseidon2 implementation in Miden Assembly is under developmen
 - **RISC Zero** overhead is primarily due to software Poseidon2 (no precompile)
 - Both zkVMs use Poseidon2 over KoalaBear field for hash operations
 
+### Challenges
+
+**Zisk**
+- Currently tested with synthetic data; real signature integration pending
+- macOS proving is slow (~26 min) due to lack of AVX2/AVX-512; Linux expected 5-10x faster
+- Final SNARK proof requires aggregation server (`-f` flag)
+
+**RISC Zero**
+- No Poseidon2 precompile: ~11M cycles vs ~15K cycles for SHA-256
+- `no_std` port required: `OnceLock` → direct init, `ethereum_ssz` → custom serialization
+- CPU proving impractical (>10 min timeout); GPU/Bonsai recommended
+
+**Miden VM**
+- Poseidon2-KoalaBear must be implemented in Miden Assembly from scratch
+- Miden's native field is Goldilocks (p = 2^64 - 2^32 + 1), not KoalaBear
+- No existing XMSS/Merkle tree library for MASM
+
 ## Quick Start
 
 ### Zisk

@@ -13,8 +13,8 @@
 # Rust
 **/*.rs.bk
 Cargo.lock
-!leansig-minimal/Cargo.lock
-!openVM-leanSig/Cargo.lock
+!zisk/leansig-minimal/Cargo.lock
+!openvm/Cargo.lock
 
 # Debug
 *.log

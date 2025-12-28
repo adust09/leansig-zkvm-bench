@@ -17,16 +17,16 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 
 ```
 .
-├── miden-leanSig/     # Miden VM implementation (MASM)
+├── miden/             # Miden VM implementation (MASM)
 │   ├── masm/          # Miden Assembly source
 │   └── tests/         # Test files
-├── openVM-leanSig/    # OpenVM implementation
+├── openvm/            # OpenVM implementation
 │   ├── guest/         # zkVM guest program (no_std)
 │   ├── host/          # CLI orchestrator
 │   └── lib/           # XMSS primitives via leanSig
-├── risc0-leansig/     # RISC Zero implementation
+├── risc0/             # RISC Zero implementation
 │   └── leansig_zkvm/  # Guest/Host code
-└── zisk-leanSig/      # Zisk implementation
+└── zisk/              # Zisk implementation
     ├── leansig-minimal/  # no_std core library
     └── verifier/         # zkVM guest program
 ```
@@ -65,7 +65,7 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 | Memory | ~10.5 GB |
 | AIR Instances | 13 |
 
-See [zisk-leanSig/BENCHMARK.md](zisk-leanSig/BENCHMARK.md) for details.
+See [zisk/BENCHMARK.md](zisk/BENCHMARK.md) for details.
 
 ### RISC Zero
 
@@ -77,13 +77,13 @@ See [zisk-leanSig/BENCHMARK.md](zisk-leanSig/BENCHMARK.md) for details.
 | Receipt Size (dev) | 473 bytes |
 | Proving Time (CPU) | >10 minutes (timeout) |
 
-See [risc0-leansig/FEASIBILITY_REPORT.md](risc0-leansig/FEASIBILITY_REPORT.md) for details.
+See [risc0/FEASIBILITY_REPORT.md](risc0/FEASIBILITY_REPORT.md) for details.
 
 ### OpenVM
 
 Work in progress. OpenVM implementation with accelerated SHA-256 and Poseidon2-KoalaBear verification.
 
-See [openVM-leanSig/README.md](openVM-leanSig/README.md) for details.
+See [openvm/README.md](openvm/README.md) for details.
 
 ### Miden VM
 
@@ -122,7 +122,7 @@ Work in progress. Poseidon2 implementation in Miden Assembly is under developmen
 ### Zisk
 
 ```bash
-cd zisk-leanSig
+cd zisk
 
 # Build
 cargo-zisk build --release
@@ -137,7 +137,7 @@ cargo-zisk prove -e target/riscv64ima-zisk-zkvm-elf/release/verifier -i data/inp
 ### RISC Zero
 
 ```bash
-cd risc0-leansig/leansig_zkvm
+cd risc0/leansig_zkvm
 
 # Development mode (no real proofs)
 RISC0_DEV_MODE=1 cargo run
@@ -149,7 +149,7 @@ cargo run --release
 ### OpenVM
 
 ```bash
-cd openVM-leanSig
+cd openvm
 
 # Run default benchmark (generate → prove → verify)
 cargo run --release --bin xmss-host
@@ -161,7 +161,7 @@ cd guest && cargo openvm build --release
 ### Miden VM
 
 ```bash
-cd miden-leanSig
+cd miden
 
 # Run tests
 miden-run tests/poseidon2_full_test.masm

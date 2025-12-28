@@ -1,7 +1,0 @@
-proc test_proc
-    add
-end
-
-begin
-    exec.test_proc
-end

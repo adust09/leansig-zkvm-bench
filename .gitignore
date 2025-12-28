@@ -14,6 +14,11 @@
 **/*.rs.bk
 Cargo.lock
 !leansig-minimal/Cargo.lock
+!openVM-leanSig/Cargo.lock
 
 # Debug
 *.log
+
+# Miden VM files
+*.masm
+*.proof

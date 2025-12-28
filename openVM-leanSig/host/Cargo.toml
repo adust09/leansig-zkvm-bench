@@ -1,0 +1,16 @@
+[package]
+name = "xmss-host"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.90"
+default-run = "xmss-host"
+
+[dependencies]
+openvm = { workspace = true }
+xmss-lib = { path = "../lib" }
+xmss-types = { path = "../xmss-types" }
+libc = { version = "0.2", optional = false }
+rand = "0.9"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }

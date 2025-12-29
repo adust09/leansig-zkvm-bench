@@ -1,0 +1,20 @@
+[package]
+name = "leansig-script"
+version = "0.1.0"
+edition = "2021"
+default-run = "leansig-script"
+
+[[bin]]
+name = "leansig-script"
+path = "src/main.rs"
+
+[dependencies]
+# Disable network features to avoid alloy-consensus dependency
+sp1-sdk = { workspace = true, default-features = false }
+leansig-minimal = { workspace = true, features = ["std"] }
+clap = { version = "4.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "1.3"
+
+[build-dependencies]
+sp1-build = "4.0"

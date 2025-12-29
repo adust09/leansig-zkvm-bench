@@ -1,0 +1,8 @@
+[package]
+name = "leansig-program"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sp1-zkvm = "4.0"
+leansig-minimal = { path = "../leansig-minimal" }

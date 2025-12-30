@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+members = [
+    "leansig-minimal",
+    "program",
+    "script",
+    "test-gen",
+]
+
+[workspace.dependencies]
+# Hashing
+sha3 = { version = "0.10.8", default-features = false }
+
+# Serialization
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+
+# SP1 SDK (disable network feature to avoid alloy-consensus serde issue)
+sp1-sdk = { version = "4.0", default-features = false }
+
+# For local crate reference
+leansig-minimal = { path = "./leansig-minimal" }

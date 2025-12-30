@@ -1,0 +1,6 @@
+/target
+Cargo.lock
+*.bin
+*.proof
+.env
+data/

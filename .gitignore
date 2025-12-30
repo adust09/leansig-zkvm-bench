@@ -15,6 +15,10 @@
 Cargo.lock
 !zisk/leansig-minimal/Cargo.lock
 !openvm/Cargo.lock
+!sp1/Cargo.lock
+
+# Generated test data
+data/
 
 # Debug
 *.log

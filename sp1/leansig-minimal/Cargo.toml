@@ -1,0 +1,18 @@
+[package]
+name = "leansig-minimal"
+version = "0.1.0"
+edition = "2021"
+description = "Minimal no_std implementation of leanSig XMSS verification for SP1"
+
+[features]
+default = []
+std = [
+    "sha3/std",
+    "serde/std",
+]
+
+[dependencies]
+# Custom KoalaBear and Poseidon2 implementation (no Plonky3 dependency)
+sha3 = { workspace = true }
+serde = { workspace = true }
+postcard = { version = "1.0", default-features = false, features = ["alloc"] }

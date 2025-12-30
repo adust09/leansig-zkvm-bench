@@ -4,32 +4,15 @@ Benchmarking XMSS signature verification across multiple zero-knowledge virtual 
 
 ## Overview
 
-This repository compares the performance of [LeanSig](https://github.com/geometryxyz/leanSig) XMSS signature verification across four zkVM platforms:
+This repository compares the performance of [LeanSig](https://github.com/geometryxyz/leanSig) XMSS signature verification across five zkVM platforms:
 
 | zkVM | Status | Description |
 |------|--------|-------------|
 | **Miden VM** | WIP | Polygon's STARK-based VM with custom Miden Assembly |
 | **OpenVM** | WIP | Succinct's modular zkVM with accelerated SHA-256 |
-| **RISC Zero** | WIP | RISC-V zkVM with STARK proofs |
+| **RISC Zero** | Done | RISC-V zkVM with STARK proofs |
+| **SP1** | WIP | Succinct's RISC-V zkVM with STARK/Groth16 proofs |
 | **Zisk** | Done | Polygon's high-performance zkVM |
-
-## Project Structure
-
-```
-.
-├── miden/             # Miden VM implementation (MASM)
-│   ├── masm/          # Miden Assembly source
-│   └── tests/         # Test files
-├── openvm/            # OpenVM implementation
-│   ├── guest/         # zkVM guest program (no_std)
-│   ├── host/          # CLI orchestrator
-│   └── lib/           # XMSS primitives via leanSig
-├── risc0/             # RISC Zero implementation
-│   └── leansig_zkvm/  # Guest/Host code
-└── zisk/              # Zisk implementation
-    ├── leansig-minimal/  # no_std core library
-    └── verifier/         # zkVM guest program
-```
 
 ## Benchmark Configuration
 
@@ -44,13 +27,13 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 
 ### Comparison Table
 
-| Metric | Zisk | RISC Zero | OpenVM | Miden VM |
-|--------|------|-----------|--------|----------|
-| **VM Cycles** | 158,022 | 11,010,048 | WIP | WIP |
-| **Execution Time** | 3.4 ms | 233 ms | - | - |
-| **Proving Time** | ~26 min | >10 min* | - | - |
-| **Memory** | ~10.5 GB | - | - | - |
-| **Platform** | macOS (Apple Silicon) | macOS (M3) | - | - |
+| Metric | Zisk | RISC Zero | SP1 | OpenVM | Miden VM |
+|--------|------|-----------|-----|--------|----------|
+| **VM Cycles** | 158,022 | 11,010,048 | WIP | WIP | WIP |
+| **Execution Time** | 3.4 ms | 233 ms | - | - | - |
+| **Proving Time** | ~26 min | >10 min* | - | - | - |
+| **Memory** | ~10.5 GB | - | - | - | - |
+| **Platform** | macOS (Apple Silicon) | macOS (M3) | - | - | - |
 
 *RISC Zero production proof did not complete within timeout on CPU.
 
@@ -79,6 +62,10 @@ See [zisk/BENCHMARK.md](zisk/BENCHMARK.md) for details.
 
 See [risc0/FEASIBILITY_REPORT.md](risc0/FEASIBILITY_REPORT.md) for details.
 
+### SP1
+
+Work in progress. SP1 implementation using Succinct's RISC-V zkVM.
+
 ### OpenVM
 
 Work in progress. OpenVM implementation with accelerated SHA-256 and Poseidon2-KoalaBear verification.
@@ -106,6 +93,11 @@ Work in progress. Poseidon2 implementation in Miden Assembly is under developmen
 - No Poseidon2 precompile: ~11M cycles vs ~15K cycles for SHA-256
 - `no_std` port required: `OnceLock` → direct init, `ethereum_ssz` → custom serialization
 - CPU proving impractical (>10 min timeout); GPU/Bonsai recommended
+
+**SP1**
+- Similar architecture to RISC Zero (RISC-V based)
+- No native Poseidon2-KoalaBear precompile; software implementation required
+- Supports Groth16/PLONK proof wrapping for on-chain verification
 
 **OpenVM**
 - Guest must be `#![no_std]` — leanSig is host-only, guest receives pre-serialized data
@@ -146,6 +138,16 @@ RISC0_DEV_MODE=1 cargo run
 cargo run --release
 ```
 
+### SP1
+
+```bash
+cd sp1
+
+# Build and run (WIP)
+cargo prove build
+cargo run --release
+```
+
 ### OpenVM
 
 ```bash
@@ -172,9 +174,6 @@ miden-run tests/poseidon2_full_test.masm
 - [LeanSig Paper](https://eprint.iacr.org/2024/1205)
 - [Zisk Documentation](https://docs.zisk.io)
 - [RISC Zero Docs](https://dev.risczero.com)
+- [SP1 Docs](https://docs.succinct.xyz)
 - [OpenVM Docs](https://docs.openvm.dev)
 - [Miden VM Docs](https://docs.polygon.technology/miden)
-
-## License
-
-MIT

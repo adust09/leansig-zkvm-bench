@@ -13,6 +13,24 @@ pub const HASH_LEN: usize = 7;
 /// Parameter length in field elements
 pub const PARAMETER_LEN: usize = 5;
 
+/// Randomness length in field elements (rho for encoding)
+pub const RANDOMNESS_LEN: usize = 6;
+
+/// Number of chains for TargetSum W=1 encoding
+pub const NUM_CHAINS: usize = 155;
+
+/// Tree height (2^18 = 262,144 signatures per key)
+pub const TREE_HEIGHT: usize = 18;
+
+/// Base for TargetSum W=1 (binary: 0 or 1)
+pub const BASE: usize = 2;
+
+/// Message hash length in field elements
+pub const MSG_HASH_LEN: usize = 5;
+
+/// Message length in field elements (for sponge input)
+pub const MSG_LEN_FE: usize = 9;
+
 /// Hash type alias
 pub type Hash = FieldArray<HASH_LEN>;
 
@@ -28,25 +46,20 @@ pub struct PublicKey {
     pub parameter: Parameter,
 }
 
-/// Merkle tree authentication path
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct MerklePath {
-    /// Co-path nodes with direction (true = right sibling, false = left sibling)
-    pub co_path: Vec<(Hash, bool)>,
-}
-
-/// Encoding randomness (matches MH::Randomness)
-pub type EncodingRandomness = FieldArray<4>;
+/// Encoding randomness (matches TargetSum W=1 encoding)
+pub type EncodingRandomness = FieldArray<RANDOMNESS_LEN>;
 
 /// XMSS Signature
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Signature {
-    /// Merkle authentication path
-    pub path: MerklePath,
+    /// Merkle authentication path (TREE_HEIGHT siblings)
+    pub path: Vec<Hash>,
     /// Encoding randomness
     pub rho: EncodingRandomness,
-    /// Chain hash values (one per chain)
+    /// Chain hash values (one per chain, NUM_CHAINS total)
     pub hashes: Vec<Hash>,
+    /// Leaf index (equals epoch)
+    pub leaf_index: u32,
 }
 
 /// Input structure for verification in RISC Zero guest

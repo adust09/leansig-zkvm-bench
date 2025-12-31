@@ -1,12 +1,12 @@
-//! XMSS signature verification.
+//! XMSS signature verification using TargetSum W=1 encoding.
 
 use alloc::vec::Vec;
 
 use crate::{
     types::{PublicKey, Signature, VerifyInput},
     poseidon::{chain_walk, verify_merkle_path},
-    encoding::encode,
-    MESSAGE_LENGTH, F,
+    encoding::compute_codeword,
+    MESSAGE_LENGTH, F, HASH_LEN, NUM_CHAINS, BASE, TREE_HEIGHT, PARAMETER_LEN,
 };
 
 /// Verify an XMSS signature.
@@ -25,121 +25,91 @@ pub fn verify_signature(
     message: &[u8; MESSAGE_LENGTH],
     sig: &Signature,
 ) -> bool {
-    // Step 1: Re-encode the message using the provided randomness
-    let encoded = match encode(epoch, &sig.rho, message) {
-        Ok(chunks) => chunks,
-        Err(_) => return false,
-    };
+    // Validate signature structure
+    if sig.hashes.len() != NUM_CHAINS {
+        return false;
+    }
+    if sig.path.len() != TREE_HEIGHT {
+        return false;
+    }
+    if sig.leaf_index != epoch {
+        return false;
+    }
 
-    // Step 2: Reconstruct chain endpoints by walking from signature hashes
-    // Each encoded chunk value tells us how many more steps to walk
-    let chain_endpoints = reconstruct_chain_endpoints(
+    // Step 1: Compute the codeword (chain positions) from the message
+    let codeword = compute_codeword(
         &pk.parameter,
         epoch,
-        &encoded,
+        &sig.rho,
+        message,
+    );
+
+    if codeword.len() != NUM_CHAINS {
+        return false;
+    }
+
+    // Step 2: Reconstruct chain endpoints by walking from signature hashes
+    let chain_ends = reconstruct_chain_endpoints(
+        &pk.parameter,
+        epoch,
+        &codeword,
         &sig.hashes,
     );
 
-    // Step 3: Combine chain endpoints into a leaf value
-    let leaf = combine_chain_endpoints(&pk.parameter, &chain_endpoints);
-
-    // Step 4: Verify the Merkle authentication path
-    let leaf_index = epoch as u64; // Epoch determines leaf position
-    verify_merkle_path(&pk.parameter, &leaf, &sig.path, leaf_index, &pk.root)
+    // Step 3: Verify the Merkle authentication path
+    verify_merkle_path(
+        &pk.parameter,
+        &pk.root,
+        epoch,
+        &chain_ends,
+        &sig.path,
+        TREE_HEIGHT,
+    )
 }
 
-/// Reconstruct chain endpoints from signature hashes and encoded values.
+/// Reconstruct chain endpoints from signature hashes and codeword values.
+///
+/// For TargetSum W=1 (BASE=2), each codeword value is 0 or 1:
+/// - If codeword[i] = 0: walk 1 step from sig.hashes[i] to reach endpoint
+/// - If codeword[i] = 1: sig.hashes[i] is already at the endpoint (walk 0 steps)
 fn reconstruct_chain_endpoints(
-    parameter: &[F],
+    parameter: &[F; PARAMETER_LEN],
     epoch: u32,
-    encoded: &[u8],
-    sig_hashes: &[Vec<F>],
-) -> Vec<Vec<F>> {
-    // TODO: Implement proper chain endpoint reconstruction
-    // For each chain i:
-    //   1. Start from sig_hashes[i] (value at step `encoded[i]`)
-    //   2. Walk remaining steps: BASE - 1 - encoded[i]
-    //   3. Result is the chain endpoint
+    codeword: &[u8],
+    sig_hashes: &[[F; HASH_LEN]],
+) -> Vec<[F; HASH_LEN]> {
+    let mut endpoints = Vec::with_capacity(NUM_CHAINS);
 
-    let mut endpoints = Vec::with_capacity(encoded.len());
+    for (chain_index, (&steps_seen, start_hash)) in codeword
+        .iter()
+        .zip(sig_hashes.iter())
+        .enumerate()
+    {
+        let start_pos = steps_seen;
 
-    for (i, &steps_done) in encoded.iter().enumerate() {
-        let remaining_steps = (crate::encoding::BASE - 1) as u32 - steps_done as u32;
+        // Validate chain position is within bounds
+        if steps_seen as usize >= BASE {
+            // Invalid codeword value, return empty (will fail verification)
+            return Vec::new();
+        }
+
+        // Calculate remaining steps to reach endpoint
+        // For BASE=2: if steps_seen=0, walk 1 step; if steps_seen=1, walk 0 steps
+        let remaining = (BASE - 1) as u8 - start_pos;
 
         let endpoint = chain_walk(
             parameter,
             epoch,
-            i as u32,
-            steps_done as u32,
-            remaining_steps,
-            &sig_hashes[i],
+            chain_index as u8,
+            start_pos,
+            remaining as usize,
+            start_hash,
         );
 
         endpoints.push(endpoint);
     }
 
     endpoints
-}
-
-/// Combine chain endpoints into a single leaf value using sponge construction.
-///
-/// For XMSS, this takes all chain endpoints and combines them into a single
-/// leaf hash using a sponge-based approach.
-fn combine_chain_endpoints(
-    parameter: &[F],
-    endpoints: &[Vec<F>],
-) -> Vec<F> {
-    use crate::poseidon::{HASH_LEN, PARAMETER_LEN, WIDTH_24};
-    use p3_koala_bear::{KoalaBear, default_koalabear_poseidon2_24};
-    use p3_symmetric::Permutation;
-
-    // Sponge parameters
-    const RATE: usize = WIDTH_24 - HASH_LEN; // Rate = WIDTH - Capacity
-    const CAPACITY: usize = HASH_LEN;
-
-    // Flatten all endpoints into a single input vector
-    let mut input: Vec<F> = Vec::with_capacity(
-        PARAMETER_LEN + endpoints.len() * HASH_LEN
-    );
-
-    // Add parameter
-    for i in 0..PARAMETER_LEN.min(parameter.len()) {
-        input.push(parameter[i]);
-    }
-
-    // Add all endpoints
-    for endpoint in endpoints {
-        input.extend(endpoint.iter().cloned());
-    }
-
-    // Initialize sponge state
-    // State = [rate portion (zeros) | capacity portion (domain separator)]
-    let mut state = [KoalaBear::new(0); WIDTH_24];
-
-    // Set domain separator in capacity portion
-    // Encode: num_endpoints, hash_len as simple domain separation
-    state[RATE] = KoalaBear::new(endpoints.len() as u32);
-    state[RATE + 1] = KoalaBear::new(HASH_LEN as u32);
-
-    let perm = default_koalabear_poseidon2_24();
-
-    // Absorb phase: process input in chunks of RATE
-    let mut offset = 0;
-    while offset < input.len() {
-        // XOR input chunk into rate portion
-        for i in 0..RATE {
-            if offset + i < input.len() {
-                state[i] = state[i] + input[offset + i];
-            }
-        }
-        offset += RATE;
-
-        // Apply permutation
-        perm.permute_mut(&mut state);
-    }
-
-    // Squeeze phase: extract HASH_LEN elements from rate portion
-    state[..HASH_LEN].to_vec()
 }
 
 /// Convenience function to verify from serialized input.

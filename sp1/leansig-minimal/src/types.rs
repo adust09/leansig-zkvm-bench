@@ -2,29 +2,31 @@
 
 use alloc::vec::Vec;
 use serde::{Deserialize, Serialize};
-use crate::{F, MESSAGE_LENGTH};
+use crate::{F, MESSAGE_LENGTH, HASH_LEN, PARAMETER_LEN, RANDOMNESS_LEN};
 
 /// Public key containing Merkle root and hash parameters.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PublicKey {
-    /// Merkle tree root (as field elements)
-    pub root: Vec<F>,
-    /// Tweakable hash parameter
-    pub parameter: Vec<F>,
+    /// Merkle tree root (7 field elements)
+    pub root: [F; HASH_LEN],
+    /// Tweakable hash parameter (5 field elements)
+    pub parameter: [F; PARAMETER_LEN],
 }
 
 /// XMSS signature containing authentication path and chain data.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Signature {
-    /// Merkle authentication path (list of sibling hashes)
-    pub path: Vec<Vec<F>>,
-    /// Encoding randomness (rho)
-    pub rho: Vec<u8>,
-    /// Hash chain endpoint values
-    pub hashes: Vec<Vec<F>>,
+    /// Merkle authentication path (TREE_HEIGHT sibling hashes, each HASH_LEN elements)
+    pub path: Vec<[F; HASH_LEN]>,
+    /// Encoding randomness (rho) - 6 field elements
+    pub rho: [F; RANDOMNESS_LEN],
+    /// Hash chain starting points (NUM_CHAINS hashes, each HASH_LEN elements)
+    pub hashes: Vec<[F; HASH_LEN]>,
+    /// Leaf index (epoch)
+    pub leaf_index: u32,
 }
 
-/// Complete input for verification (to be deserialized from Zisk input).
+/// Complete input for verification (to be deserialized from zkVM input).
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct VerifyInput {
     pub public_key: PublicKey,

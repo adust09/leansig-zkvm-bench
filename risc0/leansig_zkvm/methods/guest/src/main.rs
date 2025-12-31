@@ -6,25 +6,10 @@
 #![no_main]
 #![no_std]
 
-use leansig_core::{PublicKey, Signature, verify_signature};
+use leansig_core::{VerificationInput, verify_signature};
 use risc0_zkvm::guest::env;
 
 risc0_zkvm::guest::entry!(main);
-
-/// Input structure for signature verification
-#[derive(serde::Deserialize)]
-struct VerifyInput {
-    /// Public key for verification
-    public_key: PublicKey,
-    /// Epoch (time period) of the signature
-    epoch: u32,
-    /// Message that was signed (32 bytes)
-    message: [u8; 32],
-    /// Signature to verify
-    signature: Signature,
-    /// Chain length parameter
-    chain_length: usize,
-}
 
 /// Output structure committed to the journal
 #[derive(serde::Serialize)]
@@ -39,19 +24,17 @@ struct VerifyOutput {
 
 fn main() {
     // Read the verification input from the host
-    let input: VerifyInput = env::read();
+    let input: VerificationInput = env::read();
 
-    // Perform XMSS signature verification
+    // Perform XMSS signature verification (TargetSum W=1, 155 chains)
     let is_valid = verify_signature(
         &input.public_key,
         input.epoch,
         &input.message,
         &input.signature,
-        input.chain_length,
     );
 
     // Commit the verification result to the public journal
-    // This is what the verifier will see
     let output = VerifyOutput {
         is_valid,
         message_hash: input.message,

@@ -8,18 +8,20 @@ import numpy as np
 import os
 
 # Benchmark data (seconds)
+# Updated: 2024 - TargetSum W=1 (155 chains, Poseidon2)
+# Note: Proving times are from previous measurements, need re-measurement with new encoding
 data = {
     "SP1": {
-        "proving_time": 71.4,  # CPU, M3 Max
-        "cycles": 135_801,
-        "execution_time": 0.018,  # 18ms
+        "proving_time": 71.4,  # Previous measurement - needs re-measurement
+        "cycles": 60_424_086,  # ~60M cycles (TargetSum W=1, 155 chains)
+        "execution_time": 2.65,  # 2.65s
         "status": "completed",
     },
     "Zisk": {
-        "proving_time": 1580.3,  # ~26.3 minutes
-        "cycles": 158_022,
+        "proving_time": 1580.3,  # Previous measurement - build currently broken
+        "cycles": 158_022,  # Previous measurement - build currently broken
         "execution_time": 0.0034,  # 3.4ms
-        "status": "completed",
+        "status": "wip",
     },
     "OpenVM": {
         "proving_time": 294.5,  # ~4.9 minutes, macOS Apple Silicon
@@ -28,9 +30,9 @@ data = {
         "status": "completed",
     },
     "RISC Zero": {
-        "proving_time": 600,  # >10 min (timeout, using 10 min as lower bound)
-        "cycles": 11_010_048,
-        "execution_time": 0.233,  # 233ms
+        "proving_time": 600,  # >10 min (timeout estimate)
+        "cycles": 5_728_806,  # ~5.7M user cycles (TargetSum W=1)
+        "execution_time": 0.275,  # 275ms (dev mode)
         "status": "timeout",
     },
 }
@@ -43,7 +45,8 @@ def create_proving_time_chart():
     """Create bar chart comparing proving times."""
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    zkvm_names = list(data.keys())
+    # Filter out entries without proving time data
+    zkvm_names = [name for name in data.keys() if data[name]["proving_time"] is not None]
     proving_times = [data[name]["proving_time"] for name in zkvm_names]
     statuses = [data[name]["status"] for name in zkvm_names]
 
@@ -54,8 +57,10 @@ def create_proving_time_chart():
             colors.append("#4CAF50")  # Green for completed
         elif status == "timeout":
             colors.append("#FF9800")  # Orange for timeout
-        else:
+        elif status == "wip":
             colors.append("#9E9E9E")  # Gray for WIP
+        else:
+            colors.append("#2196F3")  # Blue for others
 
     bars = ax.bar(zkvm_names, proving_times, color=colors, edgecolor="black", linewidth=1.2)
 
@@ -87,6 +92,7 @@ def create_proving_time_chart():
     legend_elements = [
         Patch(facecolor="#4CAF50", edgecolor="black", label="Completed"),
         Patch(facecolor="#FF9800", edgecolor="black", label="Timeout (>10 min)"),
+        Patch(facecolor="#9E9E9E", edgecolor="black", label="WIP (needs re-measurement)"),
     ]
     ax.legend(handles=legend_elements, loc="upper right")
 
@@ -153,8 +159,8 @@ def create_combined_chart():
     """Create a combined chart with proving time and cycles."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    # All zkVMs for proving time chart
-    zkvm_names = list(data.keys())
+    # zkVMs with proving time data only
+    zkvm_names = [name for name in data.keys() if data[name]["proving_time"] is not None]
     proving_times = [data[name]["proving_time"] for name in zkvm_names]
     statuses = [data[name]["status"] for name in zkvm_names]
 
@@ -162,8 +168,17 @@ def create_combined_chart():
     zkvm_names_with_cycles = [name for name in data.keys() if data[name]["cycles"] is not None]
     cycles = [data[name]["cycles"] for name in zkvm_names_with_cycles]
 
-    # Proving time chart
-    colors = ["#4CAF50" if s == "completed" else "#FF9800" for s in statuses]
+    # Proving time chart - colors based on status
+    colors = []
+    for s in statuses:
+        if s == "completed":
+            colors.append("#4CAF50")
+        elif s == "timeout":
+            colors.append("#FF9800")
+        elif s == "wip":
+            colors.append("#9E9E9E")
+        else:
+            colors.append("#2196F3")
     bars1 = ax1.bar(zkvm_names, proving_times, color=colors, edgecolor="black", linewidth=1.2)
 
     for bar, time, status in zip(bars1, proving_times, statuses):
@@ -230,10 +245,10 @@ def create_efficiency_chart():
     """Create scatter plot showing cycles vs proving time."""
     fig, ax = plt.subplots(figsize=(10, 7))
 
-    # Only plot zkVMs with cycle data
+    # Only plot zkVMs with both cycle and proving time data
     for name, d in data.items():
-        if d["cycles"] is None:
-            continue  # Skip zkVMs without cycle data (e.g., OpenVM)
+        if d["cycles"] is None or d["proving_time"] is None:
+            continue  # Skip zkVMs without complete data
         color = "#4CAF50" if d["status"] == "completed" else "#FF9800"
         marker = "o" if d["status"] == "completed" else "^"
         ax.scatter(

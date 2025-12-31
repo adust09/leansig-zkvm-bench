@@ -1003,13 +1003,8 @@ dependencies = [
 name = "leansig-minimal"
 version = "0.1.0"
 dependencies = [
- "p3-field",
- "p3-koala-bear",
- "p3-poseidon2",
- "p3-symmetric",
  "postcard",
  "serde",
- "sha3",
 ]
 
 [[package]]

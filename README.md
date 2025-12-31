@@ -177,11 +177,14 @@ cargo-zisk prove -e target/riscv64ima-zisk-zkvm-elf/release/verifier -i data/inp
 ```bash
 cd risc0/leansig_zkvm
 
+# Generate test data (uses shared data/input.bin from root)
+# Run from sp1/: cargo run -p test-gen, then copy to data/input.bin
+
 # Development mode (no real proofs)
-RISC0_DEV_MODE=1 cargo run
+RISC0_DEV_MODE=1 cargo run --release -p host
 
 # Production
-cargo run --release
+cargo run --release -p host
 ```
 
 ### SP1

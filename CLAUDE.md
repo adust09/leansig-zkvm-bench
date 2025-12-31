@@ -33,8 +33,8 @@ cargo-zisk prove -e target/riscv64ima-zisk-zkvm-elf/release/verifier -i data/inp
 ### RISC Zero
 ```bash
 cd risc0/leansig_zkvm
-RISC0_DEV_MODE=1 cargo run  # Dev mode (no real proofs)
-cargo run --release  # Production
+RISC0_DEV_MODE=1 cargo run --release -p host  # Dev mode (no real proofs)
+cargo run --release -p host  # Production
 ```
 
 ### SP1

@@ -8,20 +8,19 @@ import numpy as np
 import os
 
 # Benchmark data (seconds)
-# Updated: 2024 - TargetSum W=1 (155 chains, Poseidon2)
-# Note: Proving times are from previous measurements, need re-measurement with new encoding
+# Updated: 2025-01-01 - TargetSum W=1 (155 chains, Poseidon2)
 data = {
     "SP1": {
-        "proving_time": 71.4,  # Previous measurement - needs re-measurement
-        "cycles": 60_424_086,  # ~60M cycles (TargetSum W=1, 155 chains)
-        "execution_time": 2.65,  # 2.65s
+        "proving_time": 71.4,  # 71.4s on M3 Max
+        "cycles": 135_801,  # ~136K cycles (optimized 32-bit RISC-V)
+        "execution_time": 0.018,  # ~18ms
         "status": "completed",
     },
     "Zisk": {
-        "proving_time": 1580.3,  # Previous measurement - build currently broken
-        "cycles": 158_022,  # Previous measurement - build currently broken
+        "proving_time": 1580.3,  # ~26 min on macOS (Linux expected 5-10x faster)
+        "cycles": 158_022,  # ~158K cycles (64-bit RISC-V)
         "execution_time": 0.0034,  # 3.4ms
-        "status": "wip",
+        "status": "completed",
     },
     "OpenVM": {
         "proving_time": 294.5,  # ~4.9 minutes, macOS Apple Silicon
@@ -31,9 +30,15 @@ data = {
     },
     "RISC Zero": {
         "proving_time": 600,  # >10 min (timeout estimate)
-        "cycles": 5_728_806,  # ~5.7M user cycles (TargetSum W=1)
+        "cycles": 11_000_000,  # ~11M cycles (software Poseidon2)
         "execution_time": 0.275,  # 275ms (dev mode)
         "status": "timeout",
+    },
+    "Miden": {
+        "proving_time": None,  # OOM - cannot complete
+        "cycles": 15_552_770,  # ~15.5M cycles (KoalaBear on Goldilocks)
+        "execution_time": 16.0,  # 16s
+        "status": "oom",
     },
 }
 
@@ -57,6 +62,8 @@ def create_proving_time_chart():
             colors.append("#4CAF50")  # Green for completed
         elif status == "timeout":
             colors.append("#FF9800")  # Orange for timeout
+        elif status == "oom":
+            colors.append("#F44336")  # Red for OOM
         elif status == "wip":
             colors.append("#9E9E9E")  # Gray for WIP
         else:
@@ -175,6 +182,8 @@ def create_combined_chart():
             colors.append("#4CAF50")
         elif s == "timeout":
             colors.append("#FF9800")
+        elif s == "oom":
+            colors.append("#F44336")
         elif s == "wip":
             colors.append("#9E9E9E")
         else:
@@ -249,8 +258,18 @@ def create_efficiency_chart():
     for name, d in data.items():
         if d["cycles"] is None or d["proving_time"] is None:
             continue  # Skip zkVMs without complete data
-        color = "#4CAF50" if d["status"] == "completed" else "#FF9800"
-        marker = "o" if d["status"] == "completed" else "^"
+        if d["status"] == "completed":
+            color = "#4CAF50"
+            marker = "o"
+        elif d["status"] == "timeout":
+            color = "#FF9800"
+            marker = "^"
+        elif d["status"] == "oom":
+            color = "#F44336"
+            marker = "x"
+        else:
+            color = "#2196F3"
+            marker = "s"
         ax.scatter(
             d["cycles"],
             d["proving_time"],

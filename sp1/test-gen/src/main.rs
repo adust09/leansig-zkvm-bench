@@ -4,9 +4,9 @@
 //! For now, it generates synthetic test data for benchmarking the verification circuit.
 
 use leansig_minimal::types::{PublicKey, Signature, VerifyInput};
-use leansig_minimal::poseidon::{HASH_LEN, PARAMETER_LEN};
-use leansig_minimal::encoding::DIMENSION;
-use leansig_minimal::MESSAGE_LENGTH;
+use leansig_minimal::{
+    HASH_LEN, PARAMETER_LEN, RANDOMNESS_LEN, NUM_CHAINS, TREE_HEIGHT, MESSAGE_LENGTH,
+};
 use leansig_minimal::KoalaBear;
 use std::fs::File;
 use std::io::Write;
@@ -17,10 +17,17 @@ use std::io::Write;
 /// The signature won't verify correctly, but it exercises the verification code path.
 fn generate_test_input() -> VerifyInput {
     // Create mock public key
-    let public_key = PublicKey {
-        root: (0..HASH_LEN).map(|i| KoalaBear::new(i as u32 + 100)).collect(),
-        parameter: (0..PARAMETER_LEN).map(|i| KoalaBear::new(i as u32 + 200)).collect(),
-    };
+    let mut root = [KoalaBear::ZERO; HASH_LEN];
+    for i in 0..HASH_LEN {
+        root[i] = KoalaBear::new(i as u32 + 100);
+    }
+
+    let mut parameter = [KoalaBear::ZERO; PARAMETER_LEN];
+    for i in 0..PARAMETER_LEN {
+        parameter[i] = KoalaBear::new(i as u32 + 200);
+    }
+
+    let public_key = PublicKey { root, parameter };
 
     // Test message
     let message: [u8; MESSAGE_LENGTH] = [
@@ -31,33 +38,45 @@ fn generate_test_input() -> VerifyInput {
     ];
 
     // Create mock signature
-    // For a real signature, this would come from leanSig
-    let tree_height = 18; // LOG_LIFETIME for lifetime 2^18
-    let path: Vec<Vec<_>> = (0..tree_height)
+    // Merkle authentication path (TREE_HEIGHT siblings)
+    let path: Vec<[KoalaBear; HASH_LEN]> = (0..TREE_HEIGHT)
         .map(|level| {
-            (0..HASH_LEN)
-                .map(|i| KoalaBear::new((level * HASH_LEN + i) as u32 + 1000))
-                .collect()
+            let mut hash = [KoalaBear::ZERO; HASH_LEN];
+            for i in 0..HASH_LEN {
+                hash[i] = KoalaBear::new((level * HASH_LEN + i) as u32 + 1000);
+            }
+            hash
         })
         .collect();
 
-    // Randomness for encoding (rho)
-    let rho: Vec<u8> = (0..32).map(|i| i as u8).collect();
+    // Randomness for encoding (rho) - 6 field elements
+    let mut rho = [KoalaBear::ZERO; RANDOMNESS_LEN];
+    for i in 0..RANDOMNESS_LEN {
+        rho[i] = KoalaBear::new(i as u32 + 300);
+    }
 
-    // Hash chain starting points (one per dimension)
-    let hashes: Vec<Vec<_>> = (0..DIMENSION)
+    // Hash chain starting points (NUM_CHAINS = 155 chains)
+    let hashes: Vec<[KoalaBear; HASH_LEN]> = (0..NUM_CHAINS)
         .map(|chain_idx| {
-            (0..HASH_LEN)
-                .map(|i| KoalaBear::new((chain_idx * HASH_LEN + i) as u32 + 5000))
-                .collect()
+            let mut hash = [KoalaBear::ZERO; HASH_LEN];
+            for i in 0..HASH_LEN {
+                hash[i] = KoalaBear::new((chain_idx * HASH_LEN + i) as u32 + 5000);
+            }
+            hash
         })
         .collect();
 
-    let signature = Signature { path, rho, hashes };
+    let epoch = 0u32;
+    let signature = Signature {
+        path,
+        rho,
+        hashes,
+        leaf_index: epoch,
+    };
 
     VerifyInput {
         public_key,
-        epoch: 0,
+        epoch,
         message,
         signature,
     }
@@ -65,17 +84,18 @@ fn generate_test_input() -> VerifyInput {
 
 fn main() {
     println!("=== leanSig Test Vector Generator (SP1) ===");
+    println!("Parameters: TargetSum W=1, {} chains, tree height {}", NUM_CHAINS, TREE_HEIGHT);
     println!("Generating synthetic test input for benchmarking...\n");
 
     let input = generate_test_input();
 
     println!("Generated VerifyInput:");
-    println!("  - Public key root: {} field elements", input.public_key.root.len());
-    println!("  - Public key parameter: {} field elements", input.public_key.parameter.len());
+    println!("  - Public key root: {} field elements", HASH_LEN);
+    println!("  - Public key parameter: {} field elements", PARAMETER_LEN);
     println!("  - Epoch: {}", input.epoch);
     println!("  - Message length: {} bytes", input.message.len());
     println!("  - Merkle path depth: {} levels", input.signature.path.len());
-    println!("  - Randomness (rho): {} bytes", input.signature.rho.len());
+    println!("  - Randomness (rho): {} field elements", RANDOMNESS_LEN);
     println!("  - Hash chains: {} chains", input.signature.hashes.len());
 
     // Serialize using postcard
@@ -97,8 +117,8 @@ fn main() {
     let deserialized = VerifyInput::from_bytes(&serialized).expect("Deserialization failed");
     assert_eq!(deserialized.epoch, input.epoch);
     assert_eq!(deserialized.message, input.message);
-    assert_eq!(deserialized.public_key.root.len(), input.public_key.root.len());
     assert_eq!(deserialized.signature.path.len(), input.signature.path.len());
+    assert_eq!(deserialized.signature.hashes.len(), NUM_CHAINS);
     println!("Roundtrip verification passed!");
 
     println!("\n=== Done ===");

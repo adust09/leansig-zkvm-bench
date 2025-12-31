@@ -9,9 +9,9 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 | zkVM | Status | Description |
 |------|--------|-------------|
 | **Miden VM** | WIP | Polygon's STARK-based VM with custom Miden Assembly |
-| **OpenVM** | WIP | Succinct's modular zkVM with accelerated SHA-256 |
+| **OpenVM** | Done | Succinct's modular zkVM with accelerated SHA-256 |
 | **RISC Zero** | Done | RISC-V zkVM with STARK proofs |
-| **SP1** | WIP | Succinct's RISC-V zkVM with STARK/Groth16 proofs |
+| **SP1** | Done | Succinct's RISC-V zkVM with STARK/Groth16 proofs |
 | **Zisk** | Done | Polygon's high-performance zkVM |
 
 ## Benchmark Configuration
@@ -27,15 +27,17 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 
 ### Comparison Table
 
-| Metric | Zisk | RISC Zero | SP1 | OpenVM | Miden VM |
-|--------|------|-----------|-----|--------|----------|
-| **VM Cycles** | 158,022 | 11,010,048 | WIP | WIP | WIP |
-| **Execution Time** | 3.4 ms | 233 ms | - | - | - |
-| **Proving Time** | ~26 min | >10 min* | - | - | - |
-| **Memory** | ~10.5 GB | - | - | - | - |
-| **Platform** | macOS (Apple Silicon) | macOS (M3) | - | - | - |
+| Metric | SP1 | Zisk | OpenVM | RISC Zero | Miden VM |
+|--------|-----|------|--------|-----------|----------|
+| **VM Cycles** | 135,801 | 158,022 | - | 11,010,048 | 15,552,770 |
+| **Execution Time** | 18 ms | 3.4 ms | - | 233 ms | 16 s |
+| **Proving Time** | 71.4 s | ~26 min | ~4.9 min | >10 min* | OOM** |
+| **Verification Time** | 160 ms | - | 2.78 s | - | - |
+| **Memory** | - | ~10.5 GB | 6.24 GB | - | - |
+| **Platform** | macOS (M3 Max) | macOS (Apple Silicon) | macOS (Apple Silicon) | macOS (M3) | macOS (M2) |
 
 *RISC Zero production proof did not complete within timeout on CPU.
+**Miden VM proof generation runs out of memory on MacBook Air M2 (~15.5M cycles exceeds hardware limits).
 
 ### Zisk
 
@@ -64,23 +66,51 @@ See [risc0/FEASIBILITY_REPORT.md](risc0/FEASIBILITY_REPORT.md) for details.
 
 ### SP1
 
-Work in progress. SP1 implementation using Succinct's RISC-V zkVM.
+| Metric | Value |
+|--------|-------|
+| VM Cycles | 135,801 |
+| Execution Time | ~18 ms |
+| Setup Time | 1.5 s |
+| Proving Time | 71.4 s (CPU, M3 Max) |
+| Verification Time | 160 ms |
+| Proof Size | 1.28 MB (Compressed) |
+
+See [sp1/README.md](sp1/README.md) for details.
 
 ### OpenVM
 
-Work in progress. OpenVM implementation with accelerated SHA-256 and Poseidon2-KoalaBear verification.
+| Metric | Value |
+|--------|-------|
+| Signatures | 2 |
+| Input Generation | 150.4 ms |
+| Proving Time | 294.5 s (~4.9 min) |
+| Verification Time | 2.78 s |
+| Peak Memory | 6.24 GiB |
+| Platform | macOS (Apple Silicon) |
 
 See [openvm/README.md](openvm/README.md) for details.
 
 ### Miden VM
 
-Work in progress. Poseidon2 implementation in Miden Assembly is under development.
+| Metric | Value |
+|--------|-------|
+| VM Cycles | 15,552,770 (~15.5M) |
+| Execution Time | 16 s |
+| Proving Time | OOM (killed after 11+ min) |
+| Status | Implementation complete, proof generation blocked |
+
+Miden VM implementation is functionally complete but cannot generate STARK proofs at scale due to hardware memory limits (~15.5M cycles exceeds MacBook Air M2 capacity). Smaller tests (41 cycles) successfully generate proofs in 31ms.
+
+See [miden/PROGRESS.md](miden/PROGRESS.md) for details.
 
 ### Analysis
 
-- **Zisk** achieves ~70x fewer cycles than RISC Zero for the same verification
-- **RISC Zero** overhead is primarily due to software Poseidon2 (no precompile)
-- Both zkVMs use Poseidon2 over KoalaBear field for hash operations
+- **SP1** achieves the lowest cycle count (136K) and fastest proving time (71s)
+- **Zisk** has comparable cycles (158K) but slower proving (~26 min on macOS)
+- **OpenVM** has competitive proving time (~5 min) with efficient memory usage (6.24 GB)
+- **RISC Zero** overhead (~11M cycles) is primarily due to software Poseidon2 (no precompile)
+- **Miden VM** (~15.5M cycles) requires field arithmetic emulation (KoalaBear on Goldilocks)
+- All zkVMs use Poseidon2 over KoalaBear field for hash operations (software implementation)
 
 ### Challenges
 
@@ -105,9 +135,10 @@ Work in progress. Poseidon2 implementation in Miden Assembly is under developmen
 - Statement message must be 32-byte SHA-256 digest (not raw message)
 
 **Miden VM**
-- Poseidon2-KoalaBear must be implemented in Miden Assembly from scratch
+- Poseidon2-KoalaBear implemented in Miden Assembly from scratch (complete)
 - Miden's native field is Goldilocks (p = 2^64 - 2^32 + 1), not KoalaBear
-- No existing XMSS/Merkle tree library for MASM
+- ~15.5M cycles for full verification exceeds MacBook Air M2 memory limits
+- Proof generation requires more powerful hardware or algorithm optimization
 
 ## Quick Start
 
@@ -143,9 +174,17 @@ cargo run --release
 ```bash
 cd sp1
 
-# Build and run (WIP)
-cargo prove build
-cargo run --release
+# Generate test data
+cargo run -p test-gen
+
+# Build guest program
+cd program && cargo prove build --release && cd ..
+
+# Execute (measure cycles)
+cd script && cargo run --release -- --execute
+
+# Generate proof
+cd script && cargo run --release -- --prove
 ```
 
 ### OpenVM

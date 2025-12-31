@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Generate benchmark comparison charts for zkVM proving times."""
 
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend for headless generation
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -17,6 +19,12 @@ data = {
         "proving_time": 1580.3,  # ~26.3 minutes
         "cycles": 158_022,
         "execution_time": 0.0034,  # 3.4ms
+        "status": "completed",
+    },
+    "OpenVM": {
+        "proving_time": 294.5,  # ~4.9 minutes, macOS Apple Silicon
+        "cycles": None,  # N/A - OpenVM uses different architecture
+        "execution_time": 0.150,  # 150.4ms (input generation, not execution)
         "status": "completed",
     },
     "RISC Zero": {
@@ -98,10 +106,12 @@ def create_cycles_chart():
     """Create bar chart comparing VM cycles."""
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    zkvm_names = list(data.keys())
+    # Filter out entries without cycle data
+    zkvm_names = [name for name in data.keys() if data[name]["cycles"] is not None]
     cycles = [data[name]["cycles"] for name in zkvm_names]
 
-    colors = ["#2196F3", "#2196F3", "#F44336"]  # Blue for low cycles, red for high
+    # Colors based on cycle count (blue for low <1M, red for high >=1M)
+    colors = ["#2196F3" if c < 1_000_000 else "#F44336" for c in cycles]
 
     bars = ax.bar(zkvm_names, cycles, color=colors, edgecolor="black", linewidth=1.2)
 
@@ -143,10 +153,14 @@ def create_combined_chart():
     """Create a combined chart with proving time and cycles."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
+    # All zkVMs for proving time chart
     zkvm_names = list(data.keys())
     proving_times = [data[name]["proving_time"] for name in zkvm_names]
-    cycles = [data[name]["cycles"] for name in zkvm_names]
     statuses = [data[name]["status"] for name in zkvm_names]
+
+    # zkVMs with cycle data only
+    zkvm_names_with_cycles = [name for name in data.keys() if data[name]["cycles"] is not None]
+    cycles = [data[name]["cycles"] for name in zkvm_names_with_cycles]
 
     # Proving time chart
     colors = ["#4CAF50" if s == "completed" else "#FF9800" for s in statuses]
@@ -173,9 +187,9 @@ def create_combined_chart():
     ax1.yaxis.grid(True, linestyle="--", alpha=0.7)
     ax1.set_axisbelow(True)
 
-    # Cycles chart
+    # Cycles chart (only zkVMs with cycle data)
     cycle_colors = ["#2196F3" if c < 1_000_000 else "#F44336" for c in cycles]
-    bars2 = ax2.bar(zkvm_names, cycles, color=cycle_colors, edgecolor="black", linewidth=1.2)
+    bars2 = ax2.bar(zkvm_names_with_cycles, cycles, color=cycle_colors, edgecolor="black", linewidth=1.2)
 
     for bar, cycle in zip(bars2, cycles):
         height = bar.get_height()
@@ -192,7 +206,7 @@ def create_combined_chart():
 
     ax2.set_ylabel("VM Cycles", fontsize=12)
     ax2.set_xlabel("zkVM", fontsize=12)
-    ax2.set_title("VM Cycles", fontsize=13, fontweight="bold")
+    ax2.set_title("VM Cycles (RISC-V based)", fontsize=13, fontweight="bold")
     ax2.set_yscale("log")
     ax2.yaxis.grid(True, linestyle="--", alpha=0.7)
     ax2.set_axisbelow(True)
@@ -216,7 +230,10 @@ def create_efficiency_chart():
     """Create scatter plot showing cycles vs proving time."""
     fig, ax = plt.subplots(figsize=(10, 7))
 
+    # Only plot zkVMs with cycle data
     for name, d in data.items():
+        if d["cycles"] is None:
+            continue  # Skip zkVMs without cycle data (e.g., OpenVM)
         color = "#4CAF50" if d["status"] == "completed" else "#FF9800"
         marker = "o" if d["status"] == "completed" else "^"
         ax.scatter(
@@ -230,16 +247,14 @@ def create_efficiency_chart():
             label=name,
             zorder=5,
         )
-        # Add label next to point
-        offset_x = d["cycles"] * 0.1
-        offset_y = d["proving_time"] * 0.05
+        # Add label next to point (use fixed offset in points, not data-based)
         time_label = f"{d['proving_time']:.1f}s" if d["proving_time"] < 60 else f"{d['proving_time']/60:.1f}min"
         if d["status"] == "timeout":
             time_label = f">{time_label}"
         ax.annotate(
             f"{name}\n{time_label}",
             (d["cycles"], d["proving_time"]),
-            xytext=(offset_x, offset_y),
+            xytext=(10, 5),
             textcoords="offset points",
             fontsize=10,
             fontweight="bold",

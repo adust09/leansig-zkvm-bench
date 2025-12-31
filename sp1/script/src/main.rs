@@ -47,8 +47,8 @@ fn main() {
     println!("Input size: {} bytes\n", input_bytes.len());
 
     // Deserialize to verify it's valid
-    let verify_input: leansig_minimal::VerifyInput =
-        leansig_minimal::VerifyInput::from_bytes(&input_bytes)
+    let verify_input: leansig_core::VerifyInput =
+        leansig_core::VerifyInput::from_bytes(&input_bytes)
             .expect("Failed to deserialize input");
 
     println!("Verification Input:");

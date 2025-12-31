@@ -1,7 +1,6 @@
 [workspace]
 resolver = "2"
 members = [
-    "leansig-minimal",
     "program",
     "script",
     "test-gen",
@@ -17,5 +16,6 @@ serde = { version = "1.0", default-features = false, features = ["derive", "allo
 # SP1 SDK (disable network feature to avoid alloy-consensus serde issue)
 sp1-sdk = { version = "4.0", default-features = false }
 
-# For local crate reference
-leansig-minimal = { path = "./leansig-minimal" }
+# Shared libraries
+leansig-core = { path = "../shared/leansig-core" }
+test-gen-core = { path = "../shared/test-gen-core" }

@@ -7,7 +7,7 @@
 
 ziskos::entrypoint!(main);
 
-use leansig_minimal::{VerifyInput, verify_signature};
+use leansig_core::{VerifyInput, verify_signature};
 
 fn main() {
     // Read input from Zisk host

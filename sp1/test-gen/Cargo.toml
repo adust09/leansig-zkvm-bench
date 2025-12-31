@@ -1,7 +1,9 @@
 [package]
-name = "test-gen"
+name = "sp1-test-gen"
 version = "0.1.0"
 edition = "2021"
+description = "Test vector generator for SP1 verification"
 
 [dependencies]
-leansig-minimal = { workspace = true, features = ["std"] }
+test-gen-core = { workspace = true }
+leansig-core = { workspace = true, features = ["std"] }

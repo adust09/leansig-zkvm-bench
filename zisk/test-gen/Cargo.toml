@@ -1,18 +1,13 @@
 [package]
-name = "test-gen"
+name = "zisk-test-gen"
 version = "0.1.0"
 edition = "2021"
-description = "Generate test vectors for Zisk verification"
+description = "Test vector generator for Zisk verification"
 
 [[bin]]
 name = "gen-test-vector"
 path = "src/main.rs"
 
 [dependencies]
-leansig = { workspace = true }
-leansig-minimal = { path = "../leansig-minimal", features = ["std"] }
-rand = "0.9"
-serde = { version = "1.0", features = ["derive"] }
-postcard = { version = "1.0", features = ["alloc"] }
-p3-koala-bear = { workspace = true }
-p3-field = { workspace = true }
+test-gen-core = { workspace = true }
+leansig-core = { workspace = true, features = ["std"] }

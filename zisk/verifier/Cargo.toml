@@ -6,4 +6,4 @@ description = "Zisk guest program for leanSig XMSS signature verification"
 
 [dependencies]
 ziskos = { git = "https://github.com/0xPolygonHermez/zisk.git" }
-leansig-minimal = { path = "../leansig-minimal" }
+leansig-core = { path = "../../shared/leansig-core" }

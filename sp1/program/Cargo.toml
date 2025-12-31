@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 sp1-zkvm = "4.0"
-leansig-minimal = { path = "../leansig-minimal" }
+leansig-core = { path = "../../shared/leansig-core" }

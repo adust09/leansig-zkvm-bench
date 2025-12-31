@@ -1,0 +1,13 @@
+[package]
+name = "leansig-core"
+version = "0.1.0"
+edition = "2021"
+description = "Shared no_std implementation of leanSig XMSS verification (TargetSum W=1)"
+
+[features]
+default = []
+std = ["serde/std"]
+
+[dependencies]
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+postcard = { version = "1.0", default-features = false, features = ["alloc"] }

@@ -1,0 +1,8 @@
+[package]
+name = "test-gen-core"
+version = "0.1.0"
+edition = "2021"
+description = "Shared test vector generation for leanSig XMSS verification benchmarks"
+
+[dependencies]
+leansig-core = { path = "../leansig-core", features = ["std"] }

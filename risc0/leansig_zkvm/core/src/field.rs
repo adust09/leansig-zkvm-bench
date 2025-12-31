@@ -104,8 +104,5 @@ pub const TWEAK_SEPARATOR_FOR_MESSAGE_HASH: u8 = 0x02;
 pub const TWEAK_SEPARATOR_FOR_TREE_HASH: u8 = 0x01;
 pub const TWEAK_SEPARATOR_FOR_CHAIN_HASH: u8 = 0x00;
 
-/// Message length in bytes for signatures
-pub const MESSAGE_LENGTH: usize = 32;
-
 // Re-export field trait for use
 pub use p3_field::{Field, PrimeField32, PrimeField64};

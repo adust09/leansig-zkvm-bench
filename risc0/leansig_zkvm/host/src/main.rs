@@ -5,8 +5,8 @@
 use std::time::Instant;
 
 use leansig_core::{
-    Hash, PublicKey, Signature, VerificationInput,
-    NUM_CHAINS, TREE_HEIGHT, HASH_LEN, PARAMETER_LEN, RANDOMNESS_LEN, F, FieldArray,
+    Hash, PublicKey, Signature, VerificationInput, FieldArray,
+    NUM_CHAINS, TREE_HEIGHT, HASH_LEN, PARAMETER_LEN, RANDOMNESS_LEN, F,
 };
 use methods::{LEANSIG_VERIFY_ELF, LEANSIG_VERIFY_ID};
 use p3_field::PrimeCharacteristicRing;
@@ -21,20 +21,20 @@ struct VerifyOutput {
     epoch: u32,
 }
 
-/// Create test data for signature verification
+/// Convert shared library's VerifyInput to RISC Zero's VerificationInput.
 ///
-/// This creates synthetic test data with the correct structure for TargetSum W=1.
-/// The signature won't verify correctly, but it exercises the verification code path.
-fn create_test_data() -> VerificationInput {
-    // Create mock public key
+/// The shared input.bin uses the shared library's types (raw arrays),
+/// while RISC Zero uses FieldArray wrappers. This function performs the conversion.
+fn convert_shared_to_risc0(shared: leansig_shared::VerifyInput) -> VerificationInput {
+    // Convert public key
     let mut root_arr = [F::ZERO; HASH_LEN];
-    for i in 0..HASH_LEN {
-        root_arr[i] = F::new(i as u32 + 100);
+    for (i, &val) in shared.public_key.root.iter().enumerate() {
+        root_arr[i] = F::new(val.value());
     }
 
     let mut param_arr = [F::ZERO; PARAMETER_LEN];
-    for i in 0..PARAMETER_LEN {
-        param_arr[i] = F::new(i as u32 + 200);
+    for (i, &val) in shared.public_key.parameter.iter().enumerate() {
+        param_arr[i] = F::new(val.value());
     }
 
     let public_key = PublicKey {
@@ -42,58 +42,54 @@ fn create_test_data() -> VerificationInput {
         parameter: FieldArray::new(param_arr),
     };
 
-    // Test message
-    let message: [u8; 32] = [
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-        0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
-        0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-        0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20,
-    ];
+    // Convert signature path
+    let path: Vec<Hash> = shared.signature.path.iter().map(|hash| {
+        let mut arr = [F::ZERO; HASH_LEN];
+        for (i, &val) in hash.iter().enumerate() {
+            arr[i] = F::new(val.value());
+        }
+        FieldArray::new(arr)
+    }).collect();
 
-    // Create mock signature
-    // Merkle authentication path (TREE_HEIGHT siblings)
-    let path: Vec<Hash> = (0..TREE_HEIGHT)
-        .map(|level| {
-            let mut hash_arr = [F::ZERO; HASH_LEN];
-            for i in 0..HASH_LEN {
-                hash_arr[i] = F::new((level * HASH_LEN + i) as u32 + 1000);
-            }
-            FieldArray::new(hash_arr)
-        })
-        .collect();
-
-    // Randomness for encoding (rho) - 6 field elements
+    // Convert rho
     let mut rho_arr = [F::ZERO; RANDOMNESS_LEN];
-    for i in 0..RANDOMNESS_LEN {
-        rho_arr[i] = F::new(i as u32 + 300);
+    for (i, &val) in shared.signature.rho.iter().enumerate() {
+        rho_arr[i] = F::new(val.value());
     }
-    let rho = FieldArray::new(rho_arr);
 
-    // Hash chain starting points (NUM_CHAINS = 155 chains)
-    let hashes: Vec<Hash> = (0..NUM_CHAINS)
-        .map(|chain_idx| {
-            let mut hash_arr = [F::ZERO; HASH_LEN];
-            for i in 0..HASH_LEN {
-                hash_arr[i] = F::new((chain_idx * HASH_LEN + i) as u32 + 5000);
-            }
-            FieldArray::new(hash_arr)
-        })
-        .collect();
+    // Convert hashes
+    let hashes: Vec<Hash> = shared.signature.hashes.iter().map(|hash| {
+        let mut arr = [F::ZERO; HASH_LEN];
+        for (i, &val) in hash.iter().enumerate() {
+            arr[i] = F::new(val.value());
+        }
+        FieldArray::new(arr)
+    }).collect();
 
-    let epoch = 0u32;
     let signature = Signature {
         path,
-        rho,
+        rho: FieldArray::new(rho_arr),
         hashes,
-        leaf_index: epoch,
+        leaf_index: shared.signature.leaf_index,
     };
 
     VerificationInput {
         public_key,
-        epoch,
-        message,
+        epoch: shared.epoch,
+        message: shared.message,
         signature,
     }
+}
+
+/// Load test data from the shared input.bin file.
+///
+/// This reads the pre-generated test data that is shared across all zkVM benchmarks,
+/// ensuring fair comparison of performance metrics.
+fn load_test_data(path: &str) -> VerificationInput {
+    let bytes = std::fs::read(path).expect("Failed to read input file");
+    let shared_input = leansig_shared::VerifyInput::from_bytes(&bytes)
+        .expect("Failed to deserialize input data");
+    convert_shared_to_risc0(shared_input)
 }
 
 fn main() {
@@ -108,9 +104,10 @@ fn main() {
     println!("╚══════════════════════════════════════════════════════════════╝");
     println!();
 
-    // Create test input data
-    println!("Creating test signature data...");
-    let input = create_test_data();
+    // Load test input data from shared file
+    let input_path = "../../data/input.bin";
+    println!("Loading test signature data from {}...", input_path);
+    let input = load_test_data(input_path);
     println!("  - Public key root: {} field elements", HASH_LEN);
     println!("  - Public key parameter: {} field elements", PARAMETER_LEN);
     println!("  - Epoch: {}", input.epoch);

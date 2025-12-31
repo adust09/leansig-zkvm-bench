@@ -1,5 +1,5 @@
 [package]
-name = "leansig-core"
+name = "leansig-shared"
 version = "0.1.0"
 edition = "2021"
 description = "Shared no_std implementation of leanSig XMSS verification (TargetSum W=1)"
@@ -9,5 +9,6 @@ default = []
 std = ["serde/std"]
 
 [dependencies]
+leansig-constants = { path = "../constants" }
 serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
 postcard = { version = "1.0", default-features = false, features = ["alloc"] }

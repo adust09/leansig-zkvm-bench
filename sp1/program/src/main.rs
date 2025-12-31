@@ -6,7 +6,7 @@
 #![no_main]
 sp1_zkvm::entrypoint!(main);
 
-use leansig_core::{VerifyInput, verify_signature};
+use leansig_shared::{VerifyInput, verify_signature};
 
 pub fn main() {
     // Read the verification input from the host

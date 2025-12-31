@@ -5,4 +5,4 @@ edition = "2021"
 description = "Shared test vector generation for leanSig XMSS verification benchmarks"
 
 [dependencies]
-leansig-core = { path = "../leansig-core", features = ["std"] }
+leansig-shared = { path = "../leansig-core", features = ["std"] }

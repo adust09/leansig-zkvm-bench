@@ -3,11 +3,11 @@
 //! This library generates synthetic test data in the format expected by leansig-core.
 //! The generated signature won't verify correctly, but it exercises the full verification code path.
 
-use leansig_core::types::{PublicKey, Signature, VerifyInput};
-use leansig_core::{
+use leansig_shared::types::{PublicKey, Signature, VerifyInput};
+use leansig_shared::{
     HASH_LEN, PARAMETER_LEN, RANDOMNESS_LEN, NUM_CHAINS, TREE_HEIGHT, MESSAGE_LENGTH,
 };
-use leansig_core::KoalaBear;
+use leansig_shared::KoalaBear;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;

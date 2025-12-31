@@ -5,31 +5,10 @@
 use alloc::vec::Vec;
 use serde::{Deserialize, Serialize};
 
-use crate::field::{FieldArray, MESSAGE_LENGTH};
+use crate::field::FieldArray;
 
-/// Hash length in field elements (7 elements = 28 bytes equivalent security)
-pub const HASH_LEN: usize = 7;
-
-/// Parameter length in field elements
-pub const PARAMETER_LEN: usize = 5;
-
-/// Randomness length in field elements (rho for encoding)
-pub const RANDOMNESS_LEN: usize = 6;
-
-/// Number of chains for TargetSum W=1 encoding
-pub const NUM_CHAINS: usize = 155;
-
-/// Tree height (2^18 = 262,144 signatures per key)
-pub const TREE_HEIGHT: usize = 18;
-
-/// Base for TargetSum W=1 (binary: 0 or 1)
-pub const BASE: usize = 2;
-
-/// Message hash length in field elements
-pub const MSG_HASH_LEN: usize = 5;
-
-/// Message length in field elements (for sponge input)
-pub const MSG_LEN_FE: usize = 9;
+// Re-export all constants from shared constants crate
+pub use leansig_constants::*;
 
 /// Hash type alias
 pub type Hash = FieldArray<HASH_LEN>;

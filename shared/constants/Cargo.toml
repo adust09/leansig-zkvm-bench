@@ -1,0 +1,7 @@
+[package]
+name = "leansig-constants"
+version = "0.1.0"
+edition = "2021"
+description = "Shared constants for leanSig XMSS verification across zkVMs"
+
+[lib]

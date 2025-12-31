@@ -9,17 +9,18 @@ import os
 
 # Benchmark data (seconds)
 # Updated: 2024 - TargetSum W=1 (155 chains, Poseidon2)
+# Note: Proving times are from previous measurements, need re-measurement with new encoding
 data = {
     "SP1": {
-        "proving_time": None,  # TODO: Re-measure with new TargetSum W=1
+        "proving_time": 71.4,  # Previous measurement - needs re-measurement
         "cycles": 60_424_086,  # ~60M cycles (TargetSum W=1, 155 chains)
         "execution_time": 2.65,  # 2.65s
-        "status": "wip",
+        "status": "completed",
     },
     "Zisk": {
-        "proving_time": None,  # Build error - toolchain issue with getrandom
-        "cycles": None,  # Cannot measure - build failed
-        "execution_time": None,
+        "proving_time": 1580.3,  # Previous measurement - build currently broken
+        "cycles": 158_022,  # Previous measurement - build currently broken
+        "execution_time": 0.0034,  # 3.4ms
         "status": "wip",
     },
     "OpenVM": {
@@ -29,10 +30,10 @@ data = {
         "status": "completed",
     },
     "RISC Zero": {
-        "proving_time": None,  # TODO: Re-measure in production mode
+        "proving_time": 600,  # >10 min (timeout estimate)
         "cycles": 5_728_806,  # ~5.7M user cycles (TargetSum W=1)
         "execution_time": 0.275,  # 275ms (dev mode)
-        "status": "wip",
+        "status": "timeout",
     },
 }
 
@@ -56,8 +57,10 @@ def create_proving_time_chart():
             colors.append("#4CAF50")  # Green for completed
         elif status == "timeout":
             colors.append("#FF9800")  # Orange for timeout
-        else:
+        elif status == "wip":
             colors.append("#9E9E9E")  # Gray for WIP
+        else:
+            colors.append("#2196F3")  # Blue for others
 
     bars = ax.bar(zkvm_names, proving_times, color=colors, edgecolor="black", linewidth=1.2)
 
@@ -89,6 +92,7 @@ def create_proving_time_chart():
     legend_elements = [
         Patch(facecolor="#4CAF50", edgecolor="black", label="Completed"),
         Patch(facecolor="#FF9800", edgecolor="black", label="Timeout (>10 min)"),
+        Patch(facecolor="#9E9E9E", edgecolor="black", label="WIP (needs re-measurement)"),
     ]
     ax.legend(handles=legend_elements, loc="upper right")
 
@@ -164,8 +168,17 @@ def create_combined_chart():
     zkvm_names_with_cycles = [name for name in data.keys() if data[name]["cycles"] is not None]
     cycles = [data[name]["cycles"] for name in zkvm_names_with_cycles]
 
-    # Proving time chart
-    colors = ["#4CAF50" if s == "completed" else "#FF9800" for s in statuses]
+    # Proving time chart - colors based on status
+    colors = []
+    for s in statuses:
+        if s == "completed":
+            colors.append("#4CAF50")
+        elif s == "timeout":
+            colors.append("#FF9800")
+        elif s == "wip":
+            colors.append("#9E9E9E")
+        else:
+            colors.append("#2196F3")
     bars1 = ax1.bar(zkvm_names, proving_times, color=colors, edgecolor="black", linewidth=1.2)
 
     for bar, time, status in zip(bars1, proving_times, statuses):

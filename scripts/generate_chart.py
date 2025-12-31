@@ -8,18 +8,19 @@ import numpy as np
 import os
 
 # Benchmark data (seconds)
+# Updated: 2024 - TargetSum W=1 (155 chains, Poseidon2)
 data = {
     "SP1": {
-        "proving_time": 71.4,  # CPU, M3 Max
-        "cycles": 135_801,
-        "execution_time": 0.018,  # 18ms
-        "status": "completed",
+        "proving_time": None,  # TODO: Re-measure with new TargetSum W=1
+        "cycles": 60_424_086,  # ~60M cycles (TargetSum W=1, 155 chains)
+        "execution_time": 2.65,  # 2.65s
+        "status": "wip",
     },
     "Zisk": {
-        "proving_time": 1580.3,  # ~26.3 minutes
-        "cycles": 158_022,
-        "execution_time": 0.0034,  # 3.4ms
-        "status": "completed",
+        "proving_time": None,  # Build error - toolchain issue with getrandom
+        "cycles": None,  # Cannot measure - build failed
+        "execution_time": None,
+        "status": "wip",
     },
     "OpenVM": {
         "proving_time": 294.5,  # ~4.9 minutes, macOS Apple Silicon
@@ -28,10 +29,10 @@ data = {
         "status": "completed",
     },
     "RISC Zero": {
-        "proving_time": 600,  # >10 min (timeout, using 10 min as lower bound)
-        "cycles": 11_010_048,
-        "execution_time": 0.233,  # 233ms
-        "status": "timeout",
+        "proving_time": None,  # TODO: Re-measure in production mode
+        "cycles": 5_728_806,  # ~5.7M user cycles (TargetSum W=1)
+        "execution_time": 0.275,  # 275ms (dev mode)
+        "status": "wip",
     },
 }
 
@@ -43,7 +44,8 @@ def create_proving_time_chart():
     """Create bar chart comparing proving times."""
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    zkvm_names = list(data.keys())
+    # Filter out entries without proving time data
+    zkvm_names = [name for name in data.keys() if data[name]["proving_time"] is not None]
     proving_times = [data[name]["proving_time"] for name in zkvm_names]
     statuses = [data[name]["status"] for name in zkvm_names]
 
@@ -153,8 +155,8 @@ def create_combined_chart():
     """Create a combined chart with proving time and cycles."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    # All zkVMs for proving time chart
-    zkvm_names = list(data.keys())
+    # zkVMs with proving time data only
+    zkvm_names = [name for name in data.keys() if data[name]["proving_time"] is not None]
     proving_times = [data[name]["proving_time"] for name in zkvm_names]
     statuses = [data[name]["status"] for name in zkvm_names]
 
@@ -230,10 +232,10 @@ def create_efficiency_chart():
     """Create scatter plot showing cycles vs proving time."""
     fig, ax = plt.subplots(figsize=(10, 7))
 
-    # Only plot zkVMs with cycle data
+    # Only plot zkVMs with both cycle and proving time data
     for name, d in data.items():
-        if d["cycles"] is None:
-            continue  # Skip zkVMs without cycle data (e.g., OpenVM)
+        if d["cycles"] is None or d["proving_time"] is None:
+            continue  # Skip zkVMs without complete data
         color = "#4CAF50" if d["status"] == "completed" else "#FF9800"
         marker = "o" if d["status"] == "completed" else "^"
         ax.scatter(

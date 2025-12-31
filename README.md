@@ -25,30 +25,24 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 
 ## Benchmark Results
 
-### Comparison Table
+> **Note**: All benchmarks now use unified TargetSum W=1 encoding (155 chains, Poseidon2).
+> This is more compute-intensive than previous configurations but matches the leanSig specification.
 
-| Metric | SP1 | Zisk | OpenVM | RISC Zero | Miden VM |
-|--------|-----|------|--------|-----------|----------|
-| **VM Cycles** | 135,801 | 158,022 | - | 11,010,048 | 15,552,770 |
-| **Execution Time** | 18 ms | 3.4 ms | - | 233 ms | 16 s |
-| **Proving Time** | 71.4 s | ~26 min | ~4.9 min | >10 min* | OOM** |
-| **Verification Time** | 160 ms | - | 2.78 s | - | - |
-| **Memory** | - | ~10.5 GB | 6.24 GB | - | - |
-| **Platform** | macOS (M3 Max) | macOS (Apple Silicon) | macOS (Apple Silicon) | macOS (M3) | macOS (M2) |
+### Comparison Table (TargetSum W=1)
 
-*RISC Zero production proof did not complete within timeout on CPU.
-**Miden VM proof generation runs out of memory on MacBook Air M2 (~15.5M cycles exceeds hardware limits).
+| Metric | SP1 | RISC Zero | OpenVM | Zisk | Miden VM |
+|--------|-----|-----------|--------|------|----------|
+| **VM Cycles** | 60,424,086 | 5,728,806 | - | WIP | WIP |
+| **Execution Time** | 2.65 s | 275 ms | - | WIP | WIP |
+| **Proving Time** | WIP | WIP | ~4.9 min | WIP | OOM** |
+| **Platform** | macOS (M3 Max) | macOS (M3) | macOS (Apple Silicon) | - | macOS (M2) |
+
+**WIP**: Work in progress - proving times need re-measurement with new configuration.
+**Miden VM proof generation runs out of memory on MacBook Air M2.
 
 ### Zisk
 
-| Metric | Value |
-|--------|-------|
-| VM Cycles | 158,022 |
-| Emulator Time | 3.4 ms |
-| Throughput | 45.97 Msteps/s |
-| Proving Time | ~26 minutes |
-| Memory | ~10.5 GB |
-| AIR Instances | 13 |
+> **Status**: Build error - toolchain issue with `getrandom` crate. Awaiting fix.
 
 See [zisk/BENCHMARK.md](zisk/BENCHMARK.md) for details.
 
@@ -56,11 +50,12 @@ See [zisk/BENCHMARK.md](zisk/BENCHMARK.md) for details.
 
 | Metric | Value |
 |--------|-------|
-| Total Cycles | 11,010,048 (~11M) |
-| User Cycles | 10,246,516 (~10.2M) |
-| Execution Time (dev) | 233.39 ms |
-| Receipt Size (dev) | 473 bytes |
-| Proving Time (CPU) | >10 minutes (timeout) |
+| Total Cycles | 6,291,456 (~6.3M) |
+| User Cycles | 5,728,806 (~5.7M) |
+| Execution Time (dev) | 275 ms |
+| Proving Time (CPU) | WIP |
+
+*Updated for TargetSum W=1 (155 chains, Poseidon2)*
 
 See [risc0/FEASIBILITY_REPORT.md](risc0/FEASIBILITY_REPORT.md) for details.
 
@@ -68,12 +63,11 @@ See [risc0/FEASIBILITY_REPORT.md](risc0/FEASIBILITY_REPORT.md) for details.
 
 | Metric | Value |
 |--------|-------|
-| VM Cycles | 135,801 |
-| Execution Time | ~18 ms |
-| Setup Time | 1.5 s |
-| Proving Time | 71.4 s (CPU, M3 Max) |
-| Verification Time | 160 ms |
-| Proof Size | 1.28 MB (Compressed) |
+| VM Cycles | 60,424,086 (~60M) |
+| Execution Time | 2.65 s |
+| Proving Time | WIP |
+
+*Updated for TargetSum W=1 (155 chains, Poseidon2)*
 
 See [sp1/README.md](sp1/README.md) for details.
 
@@ -103,14 +97,14 @@ Miden VM implementation is functionally complete but cannot generate STARK proof
 
 See [miden/PROGRESS.md](miden/PROGRESS.md) for details.
 
-### Analysis
+### Analysis (TargetSum W=1)
 
-- **SP1** achieves the lowest cycle count (136K) and fastest proving time (71s)
-- **Zisk** has comparable cycles (158K) but slower proving (~26 min on macOS)
+- **RISC Zero** achieves the lowest cycle count (~5.7M) among RISC-V zkVMs
+- **SP1** has ~60M cycles - higher overhead for software Poseidon2 implementation
 - **OpenVM** has competitive proving time (~5 min) with efficient memory usage (6.24 GB)
-- **RISC Zero** overhead (~11M cycles) is primarily due to software Poseidon2 (no precompile)
+- **Zisk** currently blocked by toolchain issue; awaiting fix
 - **Miden VM** (~15.5M cycles) requires field arithmetic emulation (KoalaBear on Goldilocks)
-- All zkVMs use Poseidon2 over KoalaBear field for hash operations (software implementation)
+- All zkVMs use software Poseidon2 over KoalaBear field (no hardware acceleration)
 
 ### Challenges
 

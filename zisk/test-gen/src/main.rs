@@ -3,7 +3,7 @@
 //! This program generates test vectors using the shared test-gen-core library.
 
 use test_gen_core::{generate_test_input, generate_and_write, print_summary, verify_roundtrip};
-use leansig_core::{NUM_CHAINS, TREE_HEIGHT};
+use leansig_shared::{NUM_CHAINS, TREE_HEIGHT};
 
 fn main() {
     println!("=== leanSig Test Vector Generator (Zisk) ===");

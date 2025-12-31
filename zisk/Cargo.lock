@@ -79,9 +79,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
-name = "leansig-core"
+name = "leansig-constants"
+version = "0.1.0"
+
+[[package]]
+name = "leansig-shared"
 version = "0.1.0"
 dependencies = [
+ "leansig-constants",
  "postcard",
  "serde",
 ]
@@ -245,7 +250,7 @@ dependencies = [
 name = "test-gen-core"
 version = "0.1.0"
 dependencies = [
- "leansig-core",
+ "leansig-shared",
 ]
 
 [[package]]
@@ -293,7 +298,7 @@ checksum = "6d49784317cd0d1ee7ec5c716dd598ec5b4483ea832a2dced265471cc0f690ae"
 name = "verifier"
 version = "0.1.0"
 dependencies = [
- "leansig-core",
+ "leansig-shared",
  "ziskos",
 ]
 
@@ -333,7 +338,7 @@ dependencies = [
 name = "zisk-test-gen"
 version = "0.1.0"
 dependencies = [
- "leansig-core",
+ "leansig-shared",
  "test-gen-core",
 ]
 

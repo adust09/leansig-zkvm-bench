@@ -6,4 +6,4 @@ description = "Test vector generator for SP1 verification"
 
 [dependencies]
 test-gen-core = { workspace = true }
-leansig-core = { workspace = true, features = ["std"] }
+leansig-shared = { workspace = true, features = ["std"] }

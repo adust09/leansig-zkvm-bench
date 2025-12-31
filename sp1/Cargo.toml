@@ -17,5 +17,5 @@ serde = { version = "1.0", default-features = false, features = ["derive", "allo
 sp1-sdk = { version = "4.0", default-features = false }
 
 # Shared libraries
-leansig-core = { path = "../shared/leansig-core" }
+leansig-shared = { path = "../shared/leansig-core" }
 test-gen-core = { path = "../shared/test-gen-core" }

@@ -18,7 +18,7 @@ pub mod verify;
 pub use types::{
     EncodingRandomness, Hash, Parameter, PublicKey, Signature, VerificationInput,
     HASH_LEN, PARAMETER_LEN, RANDOMNESS_LEN, NUM_CHAINS, TREE_HEIGHT, BASE,
-    MSG_HASH_LEN, MSG_LEN_FE,
+    MSG_HASH_LEN, MSG_LEN_FE, MESSAGE_LENGTH, TWEAK_LEN,
 };
-pub use field::{F, FieldArray, MESSAGE_LENGTH};
+pub use field::{F, FieldArray};
 pub use verify::verify_signature;

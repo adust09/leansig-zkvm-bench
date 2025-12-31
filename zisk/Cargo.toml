@@ -22,5 +22,5 @@ serde = { version = "1.0", default-features = false, features = ["derive", "allo
 leansig = { git = "https://github.com/leanEthereum/leanSig", branch = "main" }
 
 # Shared libraries
-leansig-core = { path = "../shared/leansig-core" }
+leansig-shared = { path = "../shared/leansig-core" }
 test-gen-core = { path = "../shared/test-gen-core" }

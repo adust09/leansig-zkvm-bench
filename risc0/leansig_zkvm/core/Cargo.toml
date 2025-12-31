@@ -8,6 +8,9 @@ default = ["std"]
 std = ["serde/std"]
 
 [dependencies]
+# Shared constants
+leansig-constants = { path = "../../../shared/constants" }
+
 # Plonky3 field types - use same revision as leanSig for API compatibility
 p3-field = { git = "https://github.com/Plonky3/Plonky3.git", rev = "a33a312", default-features = false }
 p3-koala-bear = { git = "https://github.com/Plonky3/Plonky3.git", rev = "a33a312", default-features = false }

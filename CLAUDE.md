@@ -103,12 +103,12 @@ miden-run tests/poseidon2_full_test.masm  # Run MASM tests
 
 ## Performance Reference
 
-| zkVM | VM Cycles | Status |
-|------|-----------|--------|
-| SP1 | ~136K | Done |
-| Zisk | ~158K | Done |
-| RISC Zero | ~11M | Done |
-| OpenVM | WIP | In progress |
-| Miden | WIP | In progress |
+| zkVM | VM Cycles | Proving Time | Status |
+|------|-----------|--------------|--------|
+| SP1 | ~136K | 71.4 s | Done |
+| Zisk | ~158K | ~26 min (macOS) | Done |
+| RISC Zero | ~11M | >10 min | Done |
+| OpenVM | - | ~4.9 min | Done |
+| Miden | ~15.5M | OOM | WIP (proof blocked) |
 
 Note: Proving on macOS is slow due to lack of AVX2/AVX-512. Linux recommended for benchmarking.

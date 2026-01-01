@@ -81,7 +81,7 @@ Actual results show significantly better performance than initially expected:
 |------|--------|--------------|
 | SP1 | **136K** | RISC-V 32bit |
 | Zisk | 158K | RISC-V 64bit |
-| RISC Zero | 11M | RISC-V 32bit |
+| RISC Zero | 6.3M | RISC-V 32bit |
 
 Note: SP1's efficient execution is achieved with custom KoalaBear field implementation
 

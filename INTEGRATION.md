@@ -166,7 +166,7 @@ The leanSig library uses `std` features (e.g., `rayon`, `dashmap`) for key gener
 
 | Challenge | Solution |
 |-----------|----------|
-| No Poseidon2 precompile | Software implementation (~11M cycles) |
+| No Poseidon2 precompile | Software implementation (~6.3M cycles) |
 | 32-bit RISC-V for 31-bit field | Modular reduction on every operation |
 | CPU proving slow | GPU/Bonsai recommended for production |
 | No OnceLock in no_std | Direct initialization |
@@ -231,7 +231,7 @@ The leanSig library uses `std` features (e.g., `rayon`, `dashmap`) for key gener
 |------|-----------|---------------|
 | Miden | ~15.5M | Round constant loading + Poseidon2 |
 | OpenVM | WIP | Poseidon2 (software) |
-| RISC Zero | ~11M | Poseidon2 (software, no precompile) |
+| RISC Zero | ~6.3M | Poseidon2 (software, no precompile) |
 | Zisk | ~158K | Poseidon2 (more efficient execution) |
 
 ### 3.3 Architectural Trade-offs
@@ -304,7 +304,7 @@ Total: ~328 Poseidon2 permutations per signature
 
 At ~30K-50K cycles per Poseidon2 (software), this explains:
 - Zisk: 158K cycles (optimized execution)
-- RISC Zero: 11M cycles (general-purpose overhead)
+- RISC Zero: 6.3M cycles (general-purpose overhead)
 - Miden: 15.5M cycles (field mismatch overhead)
 
 ---
@@ -426,8 +426,8 @@ mem_store.0x101
 
 | zkVM | Cycles | CPU Proving Time |
 |------|--------|------------------|
-| Zisk | 158K | ~26 min (macOS) |
-| RISC Zero | 11M | >10 min (timeout) |
+| Zisk | 158K | ~21 min (macOS) |
+| RISC Zero | 6.3M | ~31 min |
 | Miden | 15.5M | OOM (killed after 11 min) |
 
 **Solutions**:

@@ -48,7 +48,7 @@ Benchmark of XMSS signature verification in Zisk zkVM using the leanSig minimal 
 
 | Metric | Value |
 |--------|-------|
-| **Proving Time** | 1,580.3 seconds (~26.3 minutes) |
+| **Proving Time** | 1,253.9 seconds (~20.9 minutes) |
 | **Memory Required** | ~10.45 GB |
 | **AIR Instances** | 13 |
 | **Proof Type** | FRI (local) |
@@ -85,7 +85,7 @@ cargo-zisk prove -e target/riscv64ima-zisk-zkvm-elf/release/verifier -i data/inp
 
 For 158K cycles:
 - **Emulator**: ~3.4ms (development/debugging)
-- **FRI Proving**: ~26 minutes (privacy-preserving verification)
+- **FRI Proving**: ~21 minutes (privacy-preserving verification)
 - **Estimated Linux**: ~5-10x faster with AVX2/AVX-512
 
 ## Future Work

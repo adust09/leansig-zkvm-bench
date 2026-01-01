@@ -32,9 +32,9 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 
 | Metric | SP1 | Zisk | RISC Zero | OpenVM | Miden VM |
 |--------|-----|------|-----------|--------|----------|
-| **VM Cycles** | 135,801 | 158,022 | ~11M | - | 15.5M |
+| **VM Cycles** | 135,801 | 158,022 | ~6.3M | - | 15.5M |
 | **Execution Time** | ~18 ms | 3.4 ms | 275 ms | - | 16 s |
-| **Proving Time** | 71.4 s | ~26 min* | >10 min | ~4.9 min | OOM** |
+| **Proving Time** | 71.4 s | ~21 min* | ~31 min | ~4.9 min | OOM** |
 | **Platform** | macOS (M3 Max) | macOS | macOS (M3) | macOS (Apple Silicon) | macOS (M2) |
 
 *Zisk: macOS proving is slow; Linux with AVX2/AVX-512 expected 5-10x faster.
@@ -46,7 +46,7 @@ This repository compares the performance of [LeanSig](https://github.com/geometr
 |--------|-------|
 | VM Cycles | 158,022 |
 | Emulator Execution | 3.4 ms (45.97 Msteps/s) |
-| Proving Time (macOS) | 1,580.3 s (~26 min) |
+| Proving Time (macOS) | 1,253.9 s (~21 min) |
 | Peak Memory | ~10.45 GB |
 | Proof Type | FRI (local) |
 
@@ -58,10 +58,11 @@ See [zisk/BENCHMARK.md](zisk/BENCHMARK.md) for details.
 
 | Metric | Value |
 |--------|-------|
-| Total Cycles | ~11M |
-| User Cycles | ~5.7M |
-| Execution Time (dev) | 275 ms |
-| Proving Time (CPU) | >10 min (timeout) |
+| Total Cycles | 6,291,456 (~6.3M) |
+| User Cycles | 5,728,806 (~5.7M) |
+| Proving Time (CPU) | 1,867.2 s (~31 min) |
+| Verification Time | 189 ms |
+| Receipt Size | 1.65 MB |
 
 *No Poseidon2 precompile - software implementation accounts for high cycle count.*
 
@@ -112,14 +113,14 @@ See [miden/PROGRESS.md](miden/PROGRESS.md) for details.
 **Cycle Efficiency Ranking:**
 1. **SP1** (135K) - Most efficient, optimized 32-bit RISC-V implementation
 2. **Zisk** (158K) - Second best, 64-bit RISC-V architecture
-3. **RISC Zero** (~11M) - General-purpose overhead, software Poseidon2
+3. **RISC Zero** (~6.3M) - General-purpose overhead, software Poseidon2
 4. **Miden VM** (15.5M) - Field mismatch overhead (KoalaBear on Goldilocks)
 
 **Proving Time Ranking:**
 1. **SP1** (71s) - Fastest with competitive cycle count
 2. **OpenVM** (~5 min) - Good balance of proving time and memory usage
-3. **Zisk** (~26 min on macOS) - Linux expected 5-10x faster
-4. **RISC Zero** (>10 min) - CPU proving impractical; GPU/Bonsai recommended
+3. **Zisk** (~21 min on macOS) - Linux expected 5-10x faster
+4. **RISC Zero** (~31 min) - CPU proving slow; GPU/Bonsai recommended
 5. **Miden VM** (OOM) - Blocked by hardware memory limits
 
 **Key Observations:**
@@ -131,13 +132,13 @@ See [miden/PROGRESS.md](miden/PROGRESS.md) for details.
 
 **Zisk**
 - Uses shared `leansig-minimal` library with SP1
-- macOS proving is slow (~26 min) due to lack of AVX2/AVX-512; Linux expected 5-10x faster
+- macOS proving is slow (~21 min) due to lack of AVX2/AVX-512; Linux expected 5-10x faster
 - Final SNARK proof requires aggregation server (`-f` flag)
 
 **RISC Zero**
-- No Poseidon2 precompile: ~11M cycles vs ~15K cycles for SHA-256
+- No Poseidon2 precompile: ~6.3M cycles vs ~15K cycles for SHA-256
 - `no_std` port required: `OnceLock` → direct init, `ethereum_ssz` → custom serialization
-- CPU proving impractical (>10 min timeout); GPU/Bonsai recommended
+- CPU proving slow (~31 min); GPU/Bonsai recommended for production
 
 **SP1**
 - Similar architecture to RISC Zero (RISC-V based)

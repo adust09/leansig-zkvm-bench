@@ -6,14 +6,15 @@ This report documents the feasibility study for proving leanSig XMSS signature v
 
 ## Benchmark Results
 
-### Dev Mode Metrics (RISC0_DEV_MODE=1)
+### Production Metrics
 
 | Metric | Value |
 |--------|-------|
-| **Total Cycles** | 11,010,048 (~11M) |
-| **User Cycles** | 10,246,516 (~10.2M) |
-| **Execution Time** | 233.39ms |
-| **Receipt Size (dev)** | 473 bytes |
+| **Total Cycles** | 6,291,456 (~6.3M) |
+| **User Cycles** | 5,728,806 (~5.7M) |
+| **Proving Time** | 1,867.2 s (~31 min) |
+| **Verification Time** | 189 ms |
+| **Receipt Size** | 1.65 MB |
 
 ### Test Configuration
 
@@ -29,7 +30,7 @@ This report documents the feasibility study for proving leanSig XMSS signature v
 
 ### Cycle Count Breakdown (Estimated)
 
-Based on the ~11M total cycles for minimal verification:
+Based on the ~6.3M total cycles for minimal verification:
 
 1. **Poseidon2 Operations**: ~80-90% of cycles
    - Chain verification: 32 chains × 16 iterations = 512 hash operations
@@ -46,18 +47,17 @@ Based on the ~11M total cycles for minimal verification:
 
 | Environment | Time |
 |-------------|------|
-| MacBook Air (M3) | **>10 minutes** (did not complete within timeout) |
+| MacBook Air (M3) | **1,867.2 seconds (~31 minutes)** |
 
-The production proof ran for over 10 minutes without completing, confirming that:
-- **~11M cycles** is extremely expensive on CPU
-- RISC Zero's general-purpose execution model adds significant overhead for Poseidon2
-- Hardware acceleration (GPU/Metal) would be necessary for practical use
+The production proof completed successfully, confirming that:
+- **~6.3M cycles** requires significant CPU time
+- RISC Zero's general-purpose execution model adds overhead for Poseidon2
+- Hardware acceleration (GPU/Metal) recommended for practical use
 
-**Theoretical projections** (based on RISC Zero documentation):
-- CPU (single-threaded): 1-10 seconds per million cycles → ~1-2 minutes for 11M cycles
-- Actual observed: Much longer, likely due to:
-  - Field arithmetic overhead (31-bit prime on 32-bit RISC-V)
-  - Memory-intensive Poseidon2 permutations
+**Observations**:
+- CPU proving is slow but completes successfully
+- Verification is fast (189ms)
+- Receipt size is significant (1.65 MB)
   - Proof composition overhead
 
 ## Key Findings
@@ -90,8 +90,8 @@ The 11M cycle count reveals why leanEthereum created leanMultisig:
 
 For real-world XMSS parameters (tree depth 20):
 - Merkle path: 20 hash operations → +~400K cycles
-- Per-signature overhead would remain ~11M cycles
-- Aggregation of N signatures: N × 11M cycles
+- Per-signature overhead would remain ~6.3M cycles
+- Aggregation of N signatures: N × 6.3M cycles
 
 ## Technical Implementation
 
@@ -156,13 +156,14 @@ Key changes from original leanSig:
 
 This feasibility study demonstrates that leanSig XMSS verification **can** be proven in RISC Zero zkVM, achieving:
 
-- Functional proof generation
-- ~11M cycles for minimal verification
-- Valid receipt generation
+- Functional proof generation and verification
+- ~6.3M cycles for minimal verification
+- Valid receipt generation (1.65 MB)
+- Verification time: 189ms
 
-However, the performance gap (~30x slower than leanMultisig) validates leanEthereum's decision to build a specialized zkVM. For production post-quantum signature aggregation, leanMultisig remains the recommended approach.
+However, the performance gap validates leanEthereum's decision to build a specialized zkVM. For production post-quantum signature aggregation, leanMultisig remains the recommended approach.
 
-For applications requiring general-purpose computation with occasional XMSS verification, RISC Zero is viable but should be used with awareness of the ~11M cycle overhead per verification.
+For applications requiring general-purpose computation with occasional XMSS verification, RISC Zero is viable but should be used with awareness of the ~6.3M cycle overhead per verification.
 
 ---
 

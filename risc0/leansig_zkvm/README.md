@@ -10,11 +10,11 @@ This project demonstrates the feasibility of proving post-quantum XMSS signature
 
 | Metric | Value |
 |--------|-------|
-| Total Cycles | ~11M |
-| User Cycles | ~10.2M |
-| Dev Mode Time | 233ms |
-| Chain Length | 16 |
-| Number of Chains | 32 |
+| Total Cycles | 6,291,456 (~6.3M) |
+| User Cycles | 5,728,806 (~5.7M) |
+| Proving Time | 1,867.2 s (~31 min) |
+| Verification Time | 189 ms |
+| Receipt Size | 1.65 MB |
 
 See [FEASIBILITY_REPORT.md](../FEASIBILITY_REPORT.md) for detailed analysis.
 
@@ -98,7 +98,7 @@ All Plonky3 crates pinned to git rev `a33a312` for API stability.
 ## Limitations
 
 1. **Test Data Only**: Uses synthetic test data; real leanSig signatures require the full library
-2. **Performance**: ~11M cycles is significant; consider leanMultisig for production
+2. **Performance**: ~6.3M cycles is significant; consider leanMultisig for production
 3. **No GPU**: CPU-only benchmarks; GPU proving available via `RISC0_PROVER=cuda`
 
 ## License

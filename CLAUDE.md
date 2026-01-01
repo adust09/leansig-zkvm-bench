@@ -106,8 +106,8 @@ miden-run tests/poseidon2_full_test.masm  # Run MASM tests
 | zkVM | VM Cycles | Proving Time | Status |
 |------|-----------|--------------|--------|
 | SP1 | ~136K | 71.4 s | Done |
-| Zisk | ~158K | ~26 min (macOS) | Done |
-| RISC Zero | ~11M | >10 min | Done |
+| Zisk | ~158K | ~21 min (macOS) | Done |
+| RISC Zero | ~6.3M | ~31 min | Done |
 | OpenVM | - | ~4.9 min | Done |
 | Miden | ~15.5M | OOM | WIP (proof blocked) |
 

@@ -17,7 +17,7 @@ data = {
         "status": "completed",
     },
     "Zisk": {
-        "proving_time": 1580.3,  # ~26 min on macOS (Linux expected 5-10x faster)
+        "proving_time": 1253.9,  # ~20.9 min on macOS (Linux expected 5-10x faster)
         "cycles": 158_022,  # ~158K cycles (64-bit RISC-V)
         "execution_time": 0.0034,  # 3.4ms
         "status": "completed",
@@ -29,10 +29,10 @@ data = {
         "status": "completed",
     },
     "RISC Zero": {
-        "proving_time": 600,  # >10 min (timeout estimate)
-        "cycles": 11_000_000,  # ~11M cycles (software Poseidon2)
-        "execution_time": 0.275,  # 275ms (dev mode)
-        "status": "timeout",
+        "proving_time": 1867.2,  # ~31 min on macOS
+        "cycles": 6_291_456,  # ~6.3M cycles (software Poseidon2)
+        "execution_time": 0.189,  # 189ms verification time
+        "status": "completed",
     },
     "Miden": {
         "proving_time": None,  # OOM - cannot complete

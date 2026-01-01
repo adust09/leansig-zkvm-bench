@@ -1,61 +1,33 @@
-# RISC Zero Benchmarks
+# RISC Zero - LeanSig Benchmark
 
-This project contains benchmarks for RISC Zero zkVM performance measurement.
+## Overview
+
+XMSS signature verification in RISC Zero zkVM. Uses `core` crate with no_std-compatible Poseidon2 from Plonky3.
 
 ## Quick Start
 
-### Prerequisites
-- Rust (via rustup.rs)
-- 16GB+ RAM for local proving
-
-### Installation
-
 ```bash
-# Install RISC Zero toolchain
-curl -L https://risczero.com/install | bash
-rzup install
+cd leansig_zkvm
 
-# Verify installation
-cargo risczero --version
-```
-
-## Claude Code Skills
-
-This project includes custom Claude Code skills for RISC Zero development:
-
-| Command | Description |
-|---------|-------------|
-| `/risc0-setup` | Set up development environment |
-| `/risc0-new-project <name>` | Create new zkVM project |
-| `/risc0-benchmark` | Run benchmarks |
-| `/risc0-prove` | Generate proofs |
-| `/risc0-verify` | Verify receipts |
-| `/risc0-optimize` | Optimize performance |
-
-## Benchmark Metrics
-
-| Metric | Description |
-|--------|-------------|
-| Cycles | RISC-V instruction count |
-| Segments | Proof parallelization units |
-| Proving Time | Wall-clock proof generation |
-| Receipt Size | Proof size in bytes |
-
-## Development Modes
-
-```bash
-# Fast development (no real proofs)
-RISC0_DEV_MODE=1 cargo run
+# Development mode (no real proofs)
+RISC0_DEV_MODE=1 cargo run --release -p host
 
 # Production (real proofs)
-RISC0_DEV_MODE=0 cargo run --release
-
-# GPU accelerated
-RISC0_CUDA=1 cargo run --release
+cargo run --release -p host
 ```
 
-## Resources
+## Benchmark Results
 
-- [RISC Zero API Docs](https://dev.risczero.com/api)
-- [Official Benchmarks](https://reports.risczero.com)
-- [GitHub Repository](https://github.com/risc0/risc0)
+| Metric | Value |
+|--------|-------|
+| Total Cycles | 6,291,456 (~6.3M) |
+| User Cycles | 5,728,806 (~5.7M) |
+| Proving Time | 1,867.2 s (~31 min, CPU) |
+| Verification Time | 189 ms |
+| Receipt Size | 1.65 MB |
+
+## Notes
+
+- No Poseidon2 precompile; software implementation accounts for high cycle count
+- Uses 32-bit RISC-V architecture
+- GPU acceleration (`RISC0_CUDA=1`) or Bonsai service recommended for production

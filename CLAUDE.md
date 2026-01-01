@@ -56,7 +56,9 @@ cd guest && cargo openvm build --release  # Build guest
 ### Miden VM
 ```bash
 cd miden
-miden-run tests/poseidon2_full_test.masm  # Run MASM tests
+miden-vm run tests/poseidon2_full_test.masm    # Run (execution only)
+miden-vm prove tests/xmss_verify_test.masm     # Prove (generates STARK proof)
+miden-vm verify <proof-file>                   # Verify proof
 ```
 
 ## Directory Structure

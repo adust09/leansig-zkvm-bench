@@ -45,6 +45,15 @@ data = {
 # Create output directory
 os.makedirs("charts", exist_ok=True)
 
+# Color palette for each zkVM (consistent across all charts)
+ZKVM_COLORS = {
+    "SP1": "#2196F3",       # Blue
+    "Zisk": "#4CAF50",      # Green
+    "OpenVM": "#FF9800",    # Orange
+    "RISC Zero": "#9C27B0", # Purple
+    "Miden": "#F44336",     # Red
+}
+
 
 def create_proving_time_chart():
     """Create bar chart comparing proving times."""
@@ -53,32 +62,18 @@ def create_proving_time_chart():
     # Filter out entries without proving time data
     zkvm_names = [name for name in data.keys() if data[name]["proving_time"] is not None]
     proving_times = [data[name]["proving_time"] for name in zkvm_names]
-    statuses = [data[name]["status"] for name in zkvm_names]
 
-    # Colors based on status
-    colors = []
-    for status in statuses:
-        if status == "completed":
-            colors.append("#4CAF50")  # Green for completed
-        elif status == "timeout":
-            colors.append("#FF9800")  # Orange for timeout
-        elif status == "oom":
-            colors.append("#F44336")  # Red for OOM
-        elif status == "wip":
-            colors.append("#9E9E9E")  # Gray for WIP
-        else:
-            colors.append("#2196F3")  # Blue for others
+    # Colors per zkVM
+    colors = [ZKVM_COLORS[name] for name in zkvm_names]
 
     bars = ax.bar(zkvm_names, proving_times, color=colors, edgecolor="black", linewidth=1.2)
 
     # Add value labels on bars
-    for bar, time, status in zip(bars, proving_times, statuses):
+    for bar, time in zip(bars, proving_times):
         height = bar.get_height()
         label = f"{time:.1f}s"
         if time >= 60:
             label = f"{time/60:.1f}min"
-        if status == "timeout":
-            label = f">{label}"
         ax.text(
             bar.get_x() + bar.get_width() / 2.0,
             height,
@@ -92,16 +87,6 @@ def create_proving_time_chart():
     ax.set_ylabel("Proving Time (seconds)", fontsize=12)
     ax.set_xlabel("zkVM", fontsize=12)
     ax.set_title("XMSS Signature Verification - Proving Time Comparison", fontsize=14, fontweight="bold")
-
-    # Add legend
-    from matplotlib.patches import Patch
-
-    legend_elements = [
-        Patch(facecolor="#4CAF50", edgecolor="black", label="Completed"),
-        Patch(facecolor="#FF9800", edgecolor="black", label="Timeout (>10 min)"),
-        Patch(facecolor="#9E9E9E", edgecolor="black", label="WIP (needs re-measurement)"),
-    ]
-    ax.legend(handles=legend_elements, loc="upper right")
 
     # Grid
     ax.yaxis.grid(True, linestyle="--", alpha=0.7)
@@ -123,8 +108,8 @@ def create_cycles_chart():
     zkvm_names = [name for name in data.keys() if data[name]["cycles"] is not None]
     cycles = [data[name]["cycles"] for name in zkvm_names]
 
-    # Colors based on cycle count (blue for low <1M, red for high >=1M)
-    colors = ["#2196F3" if c < 1_000_000 else "#F44336" for c in cycles]
+    # Colors per zkVM
+    colors = [ZKVM_COLORS[name] for name in zkvm_names]
 
     bars = ax.bar(zkvm_names, cycles, color=colors, edgecolor="black", linewidth=1.2)
 
@@ -169,32 +154,18 @@ def create_combined_chart():
     # zkVMs with proving time data only
     zkvm_names = [name for name in data.keys() if data[name]["proving_time"] is not None]
     proving_times = [data[name]["proving_time"] for name in zkvm_names]
-    statuses = [data[name]["status"] for name in zkvm_names]
 
     # zkVMs with cycle data only
     zkvm_names_with_cycles = [name for name in data.keys() if data[name]["cycles"] is not None]
     cycles = [data[name]["cycles"] for name in zkvm_names_with_cycles]
 
-    # Proving time chart - colors based on status
-    colors = []
-    for s in statuses:
-        if s == "completed":
-            colors.append("#4CAF50")
-        elif s == "timeout":
-            colors.append("#FF9800")
-        elif s == "oom":
-            colors.append("#F44336")
-        elif s == "wip":
-            colors.append("#9E9E9E")
-        else:
-            colors.append("#2196F3")
+    # Proving time chart - colors per zkVM
+    colors = [ZKVM_COLORS[name] for name in zkvm_names]
     bars1 = ax1.bar(zkvm_names, proving_times, color=colors, edgecolor="black", linewidth=1.2)
 
-    for bar, time, status in zip(bars1, proving_times, statuses):
+    for bar, time in zip(bars1, proving_times):
         height = bar.get_height()
         label = f"{time:.1f}s" if time < 60 else f"{time/60:.1f}min"
-        if status == "timeout":
-            label = f">{label}"
         ax1.text(
             bar.get_x() + bar.get_width() / 2.0,
             height,
@@ -211,8 +182,8 @@ def create_combined_chart():
     ax1.yaxis.grid(True, linestyle="--", alpha=0.7)
     ax1.set_axisbelow(True)
 
-    # Cycles chart (only zkVMs with cycle data)
-    cycle_colors = ["#2196F3" if c < 1_000_000 else "#F44336" for c in cycles]
+    # Cycles chart - colors per zkVM
+    cycle_colors = [ZKVM_COLORS[name] for name in zkvm_names_with_cycles]
     bars2 = ax2.bar(zkvm_names_with_cycles, cycles, color=cycle_colors, edgecolor="black", linewidth=1.2)
 
     for bar, cycle in zip(bars2, cycles):
@@ -258,33 +229,20 @@ def create_efficiency_chart():
     for name, d in data.items():
         if d["cycles"] is None or d["proving_time"] is None:
             continue  # Skip zkVMs without complete data
-        if d["status"] == "completed":
-            color = "#4CAF50"
-            marker = "o"
-        elif d["status"] == "timeout":
-            color = "#FF9800"
-            marker = "^"
-        elif d["status"] == "oom":
-            color = "#F44336"
-            marker = "x"
-        else:
-            color = "#2196F3"
-            marker = "s"
+        color = ZKVM_COLORS[name]
         ax.scatter(
             d["cycles"],
             d["proving_time"],
             s=200,
             c=color,
-            marker=marker,
+            marker="o",
             edgecolors="black",
             linewidth=1.5,
             label=name,
             zorder=5,
         )
-        # Add label next to point (use fixed offset in points, not data-based)
+        # Add label next to point
         time_label = f"{d['proving_time']:.1f}s" if d["proving_time"] < 60 else f"{d['proving_time']/60:.1f}min"
-        if d["status"] == "timeout":
-            time_label = f">{time_label}"
         ax.annotate(
             f"{name}\n{time_label}",
             (d["cycles"], d["proving_time"]),

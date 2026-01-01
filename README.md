@@ -2,14 +2,6 @@
 
 Benchmarking XMSS signature verification from [leanSig](https://github.com/geometryxyz/leanSig) across multiple hash-based zkVMs.
 
-| zkVM | Status |
-|------|--------|
-| [SP1](sp1/README.md) | Done |
-| [Zisk](zisk/README.md) | Done |
-| [RISC Zero](risc0/README.md) | Done |
-| [OpenVM](openvm/README.md) | Done |
-| [Miden](miden/README.md) | WIP |
-
 ## XMSS Configuration
 
 | Parameter | Value |

@@ -4,6 +4,8 @@ Benchmarking XMSS signature verification from [leanSig](https://github.com/geome
 
 ## Benchmark Summary
 
+![Benchmark Comparison](charts/benchmark_comparison.png)
+
 | zkVM | Cycles | Proving Time | Status |
 |------|--------|--------------|--------|
 | [SP1](sp1/README.md) | 136K | 71 s | Done |
